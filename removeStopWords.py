@@ -23,8 +23,9 @@ def clean():
                 category, document = line.split(maxsplit=1)
                 words = word_tokenize(document)
                 for w in words:
-                    if (not w in stop_words) and (len(w.replace(" ", "")) > 3):
-                        l += ps.stem(w) + " "
+                    st = ps.stem(w)
+                    if (not w in stop_words) and (not st in stop_words) and  (len(st) > 3):
+                        l += st + " "
                 l += "\n"
 
                 W += category + " " + l
