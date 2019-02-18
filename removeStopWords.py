@@ -18,12 +18,14 @@ def clean():
         with open(origin_file, "r") as f:
             for line in f:
                 l = ""
-                words = line.split()
+                category, document = line.split(maxsplit=1)
+                words = word_tokenize(document)
                 for w in words:
-                    if not w in stop_words:
+                    if not w in stop_words and len(w) > 3:
                         l += w + " "
                 l += "\n"
-                W += l
+
+                W += category + " " + l
         f.close()
         dst = open(new_file, "w")
         dst.write(W)

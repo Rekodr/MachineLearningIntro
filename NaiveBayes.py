@@ -13,9 +13,19 @@ from joblib import Parallel, delayed
 num_cores = multiprocessing.cpu_count()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# TRAINING SETS
 TRAINING_FILE = os.path.join(BASE_DIR, "sample_data", "Forum", "forumTraining.data.txt")
+TRAINING_FILE_CLEAN = os.path.join(BASE_DIR, "sample_data", "Forum", "forumTraining-clean.data.txt")
+
+# TEST SETS
 TEST_FILE = os.path.join(BASE_DIR, "sample_data", "Forum", "forumTest.data.txt")
+TEST_FILE_CLEAN = os.path.join(BASE_DIR, "sample_data", "Forum", "forumTest-clean.data.txt")
+
+# MODEL SETS
 MODEL_FILE = os.path.join(BASE_DIR, "models","bayes.csv")
+MODEL_FILE_CLEAN = os.path.join(BASE_DIR, "models","bayes-2.csv")
+
 
 
 class Trainer:
@@ -95,10 +105,16 @@ class Classifier:
     Cp = None
     Wp = None
 
+    dataset_size = 1
+
     def __init__(self, model_file, test_file):
         self.test_file_path = test_file
         self.model_file_path = model_file
+        print("Loading model")
+        S = timer()
         self.Cp, self.Wp = self.read_model()
+        E = timer()
+        print("loaded model in {}".format(E - S))
 
     def read_model(self) -> tuple:
         model = pd.read_csv(self.model_file_path, index_col=0).astype(float)
@@ -134,29 +150,29 @@ class Classifier:
 
         return str(cl)
 
-    def process(self, input_data):
-        label, text = input
+    def process_input(self, index, input_data):
+        label, text = input_data
         predicted = self.classify(text)
+        R = str(label) == predicted
+        print ("{} / {} {}".format(index, self.dataset_size, R))
+        return R
 
     def test(self):
         class_probs, words_probs = self.read_model()
         R = []
         data_set = self.read_test_input()
         i = 1
-        l = len(data_set)
+        self.dataset_size = len(data_set)
 
+        print("Start testing")
+        S = timer()
+        results = []
+        results = Parallel(n_jobs=num_cores)(delayed(self.process_input)(idx, item) for idx, item in enumerate(data_set))
+        # print(results)
 
-        for label, text in data_set[0:61]:
-            predicted = self.classify(text)
-            if(str(label) == predicted):
-                print("{} / {} P".format(i, l))
-                R.append(True)
-            else:
-                print("{} / {} N".format(i, l))
-                R.append(False)
-            i+=1
-        
-        s, cnt = np.lib.arraysetops.unique(R, return_counts=True)
+        E = timer()
+        print("Completed in {}".format(E - S))
+        s, cnt = np.lib.arraysetops.unique(results, return_counts=True)
         total = reduce(lambda x, y: x + y, cnt)
         P = list(map(lambda x: x/total, cnt))
         pprint("K: {}, V: {}".format(s, P))
@@ -165,10 +181,16 @@ class Classifier:
 if __name__ == "__main__":
     # print("Tranning")
     trainer = Trainer(TRAINING_FILE, MODEL_FILE) 
-    classifier = Classifier(MODEL_FILE, TEST_FILE)   
+    trainer_clean = Trainer(TRAINING_FILE_CLEAN, MODEL_FILE_CLEAN)
+
+    #classifier = Classifier(MODEL_FILE, TEST_FILE) 
+    classifier_clean = Classifier(MODEL_FILE_CLEAN, TEST_FILE_CLEAN) 
+
     S = timer()
     #trainer.train()
-    classifier.test()
+    #trainer_clean.train()
+    #classifier.test()
+    classifier_clean.test()
     # print("Testing")
     # test()
     E = timer()
