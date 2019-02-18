@@ -188,9 +188,9 @@ if __name__ == "__main__":
 
     S = timer()
     #trainer.train()
-    #trainer_clean.train()
+    trainer_clean.train()
     #classifier.test()
-    classifier_clean.test()
+    #classifier_clean.test()
     # print("Testing")
     # test()
     E = timer()

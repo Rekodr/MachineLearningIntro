@@ -1,4 +1,5 @@
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 import os
 
@@ -10,6 +11,7 @@ TEST_FILE =  ("forumTest.data.txt", "forumTest-clean.data.text")
 
 def clean():
     stop_words = set(stopwords.words('english')) 
+    ps = PorterStemmer() 
     for origin, new in [TRAINING_FILE, TEST_FILE]:
         origin_file = os.path.join(BASE_PATH, origin)
         new_file = os.path.join(BASE_PATH, new)
@@ -21,8 +23,8 @@ def clean():
                 category, document = line.split(maxsplit=1)
                 words = word_tokenize(document)
                 for w in words:
-                    if not w in stop_words and len(w) > 3:
-                        l += w + " "
+                    if (not w in stop_words) and (len(w.replace(" ", "")) > 3):
+                        l += ps.stem(w) + " "
                 l += "\n"
 
                 W += category + " " + l
@@ -33,5 +35,3 @@ def clean():
 
 if __name__ == "__main__":
     clean()
-
-
