@@ -24,7 +24,7 @@ TEST_FILE_CLEAN = os.path.join(BASE_DIR, "sample_data", "Forum", "forumTest-clea
 
 # MODEL SETS
 MODEL_FILE = os.path.join(BASE_DIR, "models","bayes.csv")
-MODEL_FILE_CLEAN = os.path.join(BASE_DIR, "models","bayes-2.csv")
+MODEL_FILE_CLEAN = os.path.join(BASE_DIR, "models","bayes-short.csv")
 
 
 
@@ -180,8 +180,8 @@ class Classifier:
 
 if __name__ == "__main__":
     # print("Tranning")
-    trainer = Trainer(TRAINING_FILE, MODEL_FILE) 
-    trainer_clean = Trainer(TRAINING_FILE_CLEAN, MODEL_FILE_CLEAN)
+    #trainer = Trainer(TRAINING_FILE, MODEL_FILE) 
+    #trainer_clean = Trainer(TRAINING_FILE_CLEAN, MODEL_FILE_CLEAN)
 
     #classifier = Classifier(MODEL_FILE, TEST_FILE) 
     classifier_clean = Classifier(MODEL_FILE_CLEAN, TEST_FILE_CLEAN) 
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     #trainer.train()
     #trainer_clean.train()
     #classifier.test()
-    #classifier_clean.test()
+    classifier_clean.test()
     # print("Testing")
     # test()
     E = timer()
