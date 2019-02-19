@@ -11,7 +11,7 @@ TEST_FILE =  ("forumTest.data.txt", "forumTest-clean.data.text")
 
 def clean():
     stop_words = set(stopwords.words('english')) 
-    # ps = PorterStemmer() 
+    ps = PorterStemmer() 
     for origin, new in [TRAINING_FILE, TEST_FILE]:
         origin_file = os.path.join(BASE_PATH, origin)
         new_file = os.path.join(BASE_PATH, new)
@@ -23,8 +23,8 @@ def clean():
                 category, document = line.split(maxsplit=1)
                 words = word_tokenize(document)
                 for w in words:
-                    if (not w in stop_words):
-                        l += w + " "
+                    # if (not w in stop_words):
+                    l += ps.stem(w) + " "
                 l += "\n"
 
                 W += category + " " + l
