@@ -91,7 +91,7 @@ class Trainer:
         Pw = self.words_class_prob_table(Docs, V)
         model = pd.merge(Pc, Pw, right_index=True, left_index=True)
         pprint(model.head())
-        model = model.apply(lambda x: np.log10(x))
+        model = model.apply(lambda x: np.log(x))
         pprint(model.head())
         model.to_csv(self.model_file_path)
 
@@ -180,17 +180,18 @@ class Classifier:
 
 if __name__ == "__main__":
     # print("Tranning")
-    #trainer = Trainer(TRAINING_FILE, MODEL_FILE) 
+    trainer = Trainer(TRAINING_FILE, MODEL_FILE) 
     #trainer_clean = Trainer(TRAINING_FILE_CLEAN, MODEL_FILE_CLEAN)
 
     #classifier = Classifier(MODEL_FILE, TEST_FILE) 
-    classifier_clean = Classifier(MODEL_FILE_CLEAN, TEST_FILE_CLEAN) 
+    #classifier_clean = Classifier(MODEL_FILE_CLEAN, TEST_FILE_CLEAN) 
 
     S = timer()
-    #trainer.train()
+    trainer.train()
     #trainer_clean.train()
     #classifier.test()
-    classifier_clean.test()
+    
+    #classifier_clean.test()
     # print("Testing")
     # test()
     E = timer()
