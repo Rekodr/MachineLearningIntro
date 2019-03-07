@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "Car","car_training.data")
 
 class Trainer():
     classes = []
@@ -70,12 +70,12 @@ class Trainer():
             C = Trainer.get_classes(f)
             V = Trainer.get_variables(f)
             S :np.array = Trainer.get_samples(f)
-            print(S[:, -1])
-        
+            print(S)
         f.close()
                     
                         
-                
+    def train(self):
+        pass
 
 
 if __name__ == "__main__":
