@@ -80,6 +80,7 @@ class Trainer():
     @staticmethod
     def G(targets, attrs, data: np.array, S):
         target_groups = []
+        G = []
         for target in targets:
             t = data[:, -1] == target
             r = data[t]
@@ -87,7 +88,7 @@ class Trainer():
 
         N = len(data)
         for idx, name in enumerate(attrs):
-            G = S
+            g = S
             for value in attrs[name]:
                 E = 0
                 value_cnt_per_grp = []
@@ -104,8 +105,9 @@ class Trainer():
                     if p != 0:
                         E += -1 * p * math.log2(p)
                 s = E * attr_cnt/N 
-                G -= s
-            print("{} {}".format(name, G))
+                g -= s
+            G.append(g)
+            print("{} {}".format(name, g))
         
                 
 
