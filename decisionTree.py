@@ -1,12 +1,15 @@
 import numpy as np
 import os
+import math
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "Car","car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+# TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
+# TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 
 class Trainer():
-    classes = []
-    attributeMap = {}
+    targets = []
+    attributeMap = []
     trainingdata = None
 
     @staticmethod
@@ -65,19 +68,68 @@ class Trainer():
         
         return np.array(s)
 
-    def read_data(self, data_path):
+    @staticmethod
+    def read_data(data_path):
         with open(data_path, "r") as f:
             C = Trainer.get_classes(f)
             V = Trainer.get_variables(f)
-            S :np.array = Trainer.get_samples(f)
-            print(S)
+            D :np.array = Trainer.get_samples(f)
+            return C, V, D
         f.close()
                     
-                        
+    @staticmethod
+    def G(targets, attrs, data: np.array, S):
+        target_groups = []
+        for target in targets:
+            t = data[:, -1] == target
+            r = data[t]
+            target_groups.append(r)
+
+        N = len(data)
+        for idx, name in enumerate(attrs):
+            G = S
+            for value in attrs[name]:
+                E = 0
+                value_cnt_per_grp = []
+                attr_cnt = 0
+                for group in target_groups:
+                    lines = group[:,  idx] == value
+                    views = len(group[lines]) # cnt how many the attr values is seen
+                    attr_cnt += views
+                    value_cnt_per_grp.append(views)
+                
+                # calcute E for attr value
+                value_cnt_per_grp = list(map(lambda x: x/attr_cnt, value_cnt_per_grp))
+                for p in value_cnt_per_grp: 
+                    if p != 0:
+                        E += -1 * p * math.log2(p)
+                s = E * attr_cnt/N 
+                G -= s
+            print("{} {}".format(name, G))
+        
+                
+
+        # for idx, dim in enumerate(data[:, 0:-1].T):
+        #     print("idx: {}, dim: {}".format(idx, attr[idx]))
+
+    def S(self, data: np.array):
+        targets = data[:, -1]
+        Y, counts = np.unique(targets, return_counts=True)
+        size = len(targets)
+        E = 0
+        for y, count in zip(Y, counts):
+            if y in self.targets:
+                E += -1 * (count / size) * math.log2((count / size))
+
+        return E
+
     def train(self):
         pass
 
 
 if __name__ == "__main__":
     trainer = Trainer()
-    trainer.read_data(TRAINING_DATASET)
+    trainer.targets, trainer.attributeMap, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
+    S = trainer.S(trainer.trainingdata)
+    print("dim: {}".format(trainer.attributeMap))
+    Trainer.G(trainer.targets, trainer.attributeMap ,trainer.trainingdata, S)
