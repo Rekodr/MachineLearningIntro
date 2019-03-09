@@ -76,9 +76,28 @@ class Trainer():
             D :np.array = Trainer.get_samples(f)
             return C, V, D
         f.close()
+
+    
+    @staticmethod
+    def G( attr_value, attr_idx, target_groups, N):
+        E = 0
+        value_cnt_per_grp = []
+        attr_cnt = 0
+        for group in target_groups:
+            lines = group[:,  idx] == attr_value
+            views = len(group[lines]) # cnt how many the attr values is seen
+            attr_cnt += views
+            value_cnt_per_grp.append(views)
+        
+        # calcute E for attr value
+        value_cnt_per_grp = list(map(lambda x: x/attr_cnt, value_cnt_per_grp))
+        for p in value_cnt_per_grp: 
+            if p != 0:
+                E += -1 * p * math.log2(p)
+        s = E * attr_cnt/N 
                     
     @staticmethod
-    def G(targets, attrs, data: np.array, S):
+    def max_G(targets, attrs, data: np.array, S):
         target_groups = []
         G = []
         for target in targets:
@@ -106,14 +125,15 @@ class Trainer():
                         E += -1 * p * math.log2(p)
                 s = E * attr_cnt/N 
                 g -= s
-            G.append(g)
-            print("{} {}".format(name, g))
+            G.append((idx,name, g))
+
+        max_G = 0
+        for idx, name, g in G:
+            if g > max_G:
+                max_G = g
+        print("{} {}".format(name ,max_G))
         
-                
-
-        # for idx, dim in enumerate(data[:, 0:-1].T):
-        #     print("idx: {}, dim: {}".format(idx, attr[idx]))
-
+        
     def S(self, data: np.array):
         targets = data[:, -1]
         Y, counts = np.unique(targets, return_counts=True)
@@ -134,4 +154,4 @@ if __name__ == "__main__":
     trainer.targets, trainer.attributeMap, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
     S = trainer.S(trainer.trainingdata)
     print("dim: {}".format(trainer.attributeMap))
-    Trainer.G(trainer.targets, trainer.attributeMap ,trainer.trainingdata, S)
+    Trainer.max_G(trainer.targets, trainer.attributeMap ,trainer.trainingdata, S)
