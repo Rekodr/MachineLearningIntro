@@ -131,8 +131,9 @@ class Trainer():
         for idx, name, g in G:
             if g > max_G:
                 max_G = g
-        print("{} {}".format(name ,max_G))
-        
+        # print("{} {}".format(name ,max_G))
+        return name, max_G
+
         
     def S(self, data: np.array):
         targets = data[:, -1]
