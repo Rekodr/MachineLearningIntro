@@ -1,55 +1,1457 @@
 {
-  "attr_node": "Forecast",
-  "--": {
-    "Sunny": {
-      "attr_node": "Wind",
-      "--": {
-        "Strong": {
-          "+": "Yes",
-          "-o-": null
+  "@": "safety",
+  "+": {
+    "low": {
+      "$": "poor",
+      "@": null
+    },
+    "medium": {
+      "@": "persons",
+      "+": {
+        "2": {
+          "$": "poor",
+          "@": null
         },
-        "Weak": {
-          "attr_node": "Water",
-          "--": {
-            "Warm": {
-              "+": "No",
-              "-o-": null
+        "4": {
+          "@": "maintenance",
+          "+": {
+            "vhigh": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "$": "poor",
+                  "@": null
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": null,
+                          "@": null
+                        },
+                        "3": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                }
+              }
             },
-            "Moderate": {
-              "+": "Yes",
-              "-o-": null
+            "high": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": null,
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "$": "acceptable",
+                  "@": null
+                }
+              }
             },
-            "Cold": {
-              "+": "No",
-              "-o-": null
+            "medium": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "low": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": null,
+                          "@": null
+                        },
+                        "3": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": null,
+                          "@": null
+                        },
+                        "3": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "6": {
+          "@": "maintenance",
+          "+": {
+            "vhigh": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "$": "poor",
+                  "@": null
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "high": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "medium": {
+              "@": "trunk",
+              "+": {
+                "small": {
+                  "@": "cost",
+                  "+": {
+                    "vhigh": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "high": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": null,
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "low": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "cost",
+                  "+": {
+                    "vhigh": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "high": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "low": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                },
+                "big": {
+                  "@": "cost",
+                  "+": {
+                    "vhigh": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "high": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "low": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "low": {
+              "@": "cost",
+              "+": {
+                "vhigh": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "good",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "3": {
+                          "$": null,
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "good",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "good",
+                      "@": null
+                    }
+                  }
+                }
+              }
             }
           }
         }
       }
     },
-    "Cloudy": {
-      "+": "Yes",
-      "-o-": null
-    },
-    "Rainy": {
-      "attr_node": "Air",
-      "--": {
-        "Warm": {
-          "attr_node": "Wind",
-          "--": {
-            "Strong": {
-              "+": "Yes",
-              "-o-": null
+    "high": {
+      "@": "persons",
+      "+": {
+        "2": {
+          "$": "poor",
+          "@": null
+        },
+        "4": {
+          "@": "cost",
+          "+": {
+            "vhigh": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "$": "poor",
+                  "@": null
+                },
+                "medium": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "low": {
+                  "$": "acceptable",
+                  "@": null
+                }
+              }
             },
-            "Weak": {
-              "+": "No",
-              "-o-": null
+            "high": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "medium": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "low": {
+                  "$": "acceptable",
+                  "@": null
+                }
+              }
+            },
+            "medium": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "high": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "medium": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "vgood",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "good",
+                      "@": null
+                    },
+                    "medium": {
+                      "$": "vgood",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "low": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "acceptable",
+                  "@": null
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "good",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": null,
+                          "@": null
+                        },
+                        "3": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "good",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "3": {
+                          "$": null,
+                          "@": null
+                        },
+                        "4": {
+                          "$": "vgood",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                }
+              }
             }
           }
         },
-        "Cool": {
-          "+": "No",
-          "-o-": null
+        "6": {
+          "@": "cost",
+          "+": {
+            "vhigh": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "$": "poor",
+                  "@": null
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": null,
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "big": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "high": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "$": "poor",
+                  "@": null
+                },
+                "high": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "big": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": null,
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "$": "poor",
+                      "@": null
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "medium": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": null,
+                          "@": null
+                        },
+                        "big": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "acceptable",
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "$": "vgood",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "$": "vgood",
+                      "@": null
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            },
+            "low": {
+              "@": "maintenance",
+              "+": {
+                "vhigh": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "big": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "3": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "4": {
+                      "$": "acceptable",
+                      "@": null
+                    },
+                    "5": {
+                      "$": "acceptable",
+                      "@": null
+                    }
+                  }
+                },
+                "high": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "5": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "acceptable",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "vgood",
+                          "@": null
+                        },
+                        "4": {
+                          "$": "vgood",
+                          "@": null
+                        },
+                        "5": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "medium": {
+                  "@": "trunk",
+                  "+": {
+                    "small": {
+                      "$": "good",
+                      "@": null
+                    },
+                    "medium": {
+                      "@": "doors",
+                      "+": {
+                        "2": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "3": {
+                          "$": "vgood",
+                          "@": null
+                        },
+                        "4": {
+                          "$": null,
+                          "@": null
+                        },
+                        "5": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "big": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                },
+                "low": {
+                  "@": "doors",
+                  "+": {
+                    "2": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "poor",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "big": {
+                          "$": null,
+                          "@": null
+                        }
+                      }
+                    },
+                    "3": {
+                      "$": "vgood",
+                      "@": null
+                    },
+                    "4": {
+                      "@": "trunk",
+                      "+": {
+                        "small": {
+                          "$": "good",
+                          "@": null
+                        },
+                        "medium": {
+                          "$": null,
+                          "@": null
+                        },
+                        "big": {
+                          "$": "vgood",
+                          "@": null
+                        }
+                      }
+                    },
+                    "5": {
+                      "$": "vgood",
+                      "@": null
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

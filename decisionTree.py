@@ -8,9 +8,9 @@ from pprint import pprint
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 
 
 class Trainer():
@@ -163,7 +163,7 @@ class Trainer():
     def build_tree(self, attributes, data_arr, parent_node=None, edge_name=None):
         if len(data_arr) <= 1: #if the number of rows is < n return most common.
             most_common = self.most_common(data_arr) 
-            parent_node["--"][edge_name] = {"+": most_common, "-o-": None}
+            parent_node["+"][edge_name] = {"$": most_common, "@": None}
             # print("{} -> {} : {}".format(parent, edge, most_common))         
             return 
         
@@ -173,18 +173,18 @@ class Trainer():
         new_node = None
         if max_gain == 0:
             most_common = self.most_common(data_arr)
-            parent_node["--"][edge_name] = {"+": most_common, "-o-": None}
+            parent_node["+"][edge_name] = {"$": most_common, "@": None}
             # print("{} -> {} : {}".format(parent, edge, most_common))
             return
         else:
             new_node = {
-                "attr_node": attr_name,
-                "--": {}
+                "@": attr_name,
+                "+": {}
             }
             if parent_node is None:
                 self.root_node = new_node
             else:
-                parent_node["--"][edge_name] = new_node
+                parent_node["+"][edge_name] = new_node
 
         new_attrs = attributes.copy()
         new_attrs.pop(attr_name, None)
