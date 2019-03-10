@@ -9,6 +9,7 @@ MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
 
 class DecisionTree():
@@ -221,7 +222,8 @@ if __name__ == "__main__":
     trainer = DecisionTree()
     trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
-    trainer.test(trainer.trainingdata)
+    T, attrs, test_data = DecisionTree.read_data(TEST_DATASET)
+    trainer.test(test_data)
 
     # with open(MODEL_FILE, 'w') as f:  
     #     json.dump(trainer.root_node, f, indent=2)
