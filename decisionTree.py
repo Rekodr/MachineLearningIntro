@@ -8,12 +8,12 @@ from pprint import pprint
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 
 
-class Trainer():
+class DecisionTree():
     targets = []
     attributes = []
     trainingdata = None
@@ -76,11 +76,11 @@ class Trainer():
         return np.array(s)
 
     @staticmethod
-    def read_data(data_path):
+    def read_data(data_path: str):
         with open(data_path, "r") as f:
-            C = Trainer.get_classes(f)
-            V = Trainer.get_variables(f)
-            D :np.array = Trainer.get_samples(f)
+            C = DecisionTree.get_classes(f)
+            V = DecisionTree.get_variables(f)
+            D :np.array = DecisionTree.get_samples(f)
             return C, V, D
         f.close()
 
@@ -130,7 +130,7 @@ class Trainer():
         return (attr_name, attr_idx, max_G)       
 
     @staticmethod
-    def max_G(targets, attrs, data: np.array, S):
+    def max_G(targets, attrs:dict, data:np.array, S:float):
         target_groups = []
         G = []
         for target in targets:
@@ -142,14 +142,14 @@ class Trainer():
         for idx, attr_name in enumerate(attrs):
             g = S
             for attr_value in attrs[attr_name]: #loop throup attr values
-                E = Trainer.Entropy(attr_value, idx, target_groups, N)
+                E = DecisionTree.Entropy(attr_value, idx, target_groups, N)
                 g -= E
             G.append((idx, attr_name, g))
 
-        attr_name, index,  max_G = Trainer.max_gain(G)
+        attr_name, index,  max_G = DecisionTree.max_gain(G)
         return attr_name, index, max_G
 
-    def most_common(self, data_arr):
+    def most_common(self, data_arr:np.array) -> str:
         MC = None # most common
         max_cnt = 0
         for target in self.targets:
@@ -160,15 +160,15 @@ class Trainer():
                 MC = target
         return MC 
     
-    def build_tree(self, attributes, data_arr, parent_node=None, edge_name=None):
+    def build_tree(self, attributes:dict, data_arr: np.array, parent_node:dict = None, edge_name:str=None):
         if len(data_arr) <= 1: #if the number of rows is < n return most common.
             most_common = self.most_common(data_arr) 
             parent_node["+"][edge_name] = {"$": most_common, "@": None}
             # print("{} -> {} : {}".format(parent, edge, most_common))         
             return 
         
-        S = Trainer.S(self.targets, data_arr)
-        attr_name, attr_idx, max_gain = Trainer.max_G(self.targets, attributes, data_arr, S)
+        S = DecisionTree.S(self.targets, data_arr)
+        attr_name, attr_idx, max_gain = DecisionTree.max_G(self.targets, attributes, data_arr, S)
        
         new_node = None
         if max_gain == 0:
@@ -199,9 +199,12 @@ class Trainer():
     def train(self):
         self.build_tree(self.attributes, self.trainingdata)
 
+
+    def test(self, training_data: np.array):
+        pass
 if __name__ == "__main__":
-    trainer = Trainer()
-    trainer.targets, trainer.attributes, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
+    trainer = DecisionTree()
+    trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
 
     with open(MODEL_FILE, 'w') as f:  
