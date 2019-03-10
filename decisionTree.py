@@ -2,8 +2,6 @@ import numpy as np
 import os
 import math
 import json
-from pprint import pprint
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
@@ -121,7 +119,6 @@ class DecisionTree():
         max_G = 0
         attr_name = ""
         attr_idx = 0
-        # print("g: {}".format(G))
         for idx, name, g in G:
             if g >= max_G:
                 max_G = g
@@ -164,7 +161,6 @@ class DecisionTree():
         if len(data_arr) <= 1: #if the number of rows is < n return most common.
             most_common = self.most_common(data_arr) 
             parent_node["+"][edge_name] = {"$": most_common, "@": None}
-            # print("{} -> {} : {}".format(parent, edge, most_common))         
             return 
         
         S = DecisionTree.S(self.targets, data_arr)
@@ -174,7 +170,6 @@ class DecisionTree():
         if max_gain == 0:
             most_common = self.most_common(data_arr)
             parent_node["+"][edge_name] = {"$": most_common, "@": None}
-            # print("{} -> {} : {}".format(parent, edge, most_common))
             return
         else:
             new_node = {
