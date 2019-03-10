@@ -3,7 +3,9 @@ import os
 import math
 import json
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
@@ -198,6 +200,7 @@ class DecisionTree():
 
     def train(self):
         self.build_tree(self.attributes, self.trainingdata)
+        return self.root_node
 
     def traverse(self, node, data):
         if node["@"] is None:
@@ -222,8 +225,6 @@ class DecisionTree():
             predicted.append(self.classify(x))
         acc = np.mean(predicted == Y)
         print("accuracy: {}".format(acc * 100))
-
-
 
 
 
