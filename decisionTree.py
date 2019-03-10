@@ -1,16 +1,21 @@
 import numpy as np
 import os
 import math
+import json
+from pprint import pprint
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 
+
 class Trainer():
     targets = []
     attributes = []
     trainingdata = None
+    root_node = None
 
     @staticmethod
     def get_classes(f):
@@ -116,7 +121,7 @@ class Trainer():
         attr_idx = 0
         # print("g: {}".format(G))
         for idx, name, g in G:
-            if g > max_G:
+            if g >= max_G:
                 max_G = g
                 attr_name = name
                 attr_idx = idx
@@ -126,14 +131,9 @@ class Trainer():
     def max_G(targets, attrs, data: np.array, S):
         target_groups = []
         G = []
-        most_common = None
-        max_cnt = 0
         for target in targets:
             t = data[:, -1] == target
             r = data[t]
-            if len(r) > max_cnt:
-                max_cnt = len(r)
-                most_common = target
             target_groups.append(r)
 
         N = len(data)
@@ -145,33 +145,53 @@ class Trainer():
             G.append((idx, attr_name, g))
 
         attr_name, index,  max_G = Trainer.max_gain(G)
-        return attr_name, index, most_common
+        return attr_name, index, max_G
+
+    def most_common(self, data_arr):
+        MC = None # most common
+        max_cnt = 0
+        for target in self.targets:
+            t = data_arr[:, -1] == target
+            r = data_arr[t]
+            if len(r) > max_cnt:
+                max_cnt = len(r)
+                MC = target
+        return MC 
     
-    def build_tree(self, attributes, data_arr, parent=None, edge=None):
-        if len(data_arr) <= 1:
-            most_common = None
-            max_cnt = 0
-            for target in self.targets:
-                t = data_arr[:, -1] == target
-                r = data_arr[t]
-                if len(r) > max_cnt:
-                    max_cnt = len(r)
-                    most_common = target   
-            print("{} -> {} : {}".format(parent, edge, most_common))         
-            return 0
+    def build_tree(self, attributes, data_arr, parent_node=None, edge_name=None):
+        if len(data_arr) <= 1: #if the number of rows is < n return most common.
+            most_common = self.most_common(data_arr) 
+            parent_node["egdes"][edge_name] = {"leaf": most_common}
+            # print("{} -> {} : {}".format(parent, edge, most_common))         
+            return 
         
         S = Trainer.S(self.targets, data_arr)
-        attr_name, attr_idx, most_common = Trainer.max_G(self.targets, attributes, data_arr, S)
-        new_attrs = attributes.copy()
-        attr = new_attrs.pop(attr_name, None)
-        if attr is None:
-            print("{} -> {} : {}".format(parent, edge ,most_common))
+        attr_name, attr_idx, max_gain = Trainer.max_G(self.targets, attributes, data_arr, S)
+       
+        new_node = None
+        if max_gain == 0:
+            most_common = self.most_common(data_arr)
+            parent_node["egdes"][edge_name] = {"leaf": most_common}
+            # print("{} -> {} : {}".format(parent, edge, most_common))
             return
+        else:
+            new_node = {
+                "attr_node": attr_name,
+                "egdes": {}
+            }
+            if parent_node is None:
+                self.root_node = new_node
+            else:
+                parent_node["egdes"][edge_name] = new_node
+
+        new_attrs = attributes.copy()
+        new_attrs.pop(attr_name, None)
         for attr_value in attributes[attr_name]:
             data = data_arr[:, attr_idx] == attr_value
             data = data_arr[data]
             data = np.delete(data, attr_idx, axis=1)
-            self.build_tree(new_attrs, data, parent=attr_name, edge=attr_value)
+            self.build_tree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
+
 
 
     def train(self):
@@ -182,3 +202,4 @@ if __name__ == "__main__":
     trainer.targets, trainer.attributes, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
     trainer.train()
 
+    pprint(trainer.root_node)
