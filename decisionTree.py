@@ -210,5 +210,5 @@ if __name__ == "__main__":
     trainer.train()
     trainer.test()
 
-    with open(MODEL_FILE, 'w') as f:  
-        json.dump(trainer.root_node, f, indent=2)
+    # with open(MODEL_FILE, 'w') as f:  
+    #     json.dump(trainer.root_node, f, indent=2)
