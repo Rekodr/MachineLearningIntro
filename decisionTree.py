@@ -6,6 +6,8 @@ from pprint import pprint
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
+
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
@@ -201,5 +203,6 @@ if __name__ == "__main__":
     trainer = Trainer()
     trainer.targets, trainer.attributes, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
     trainer.train()
-
-    pprint(trainer.root_node)
+    
+    with open(MODEL_FILE, 'w') as f:  
+        json.dump(trainer.root_node, f, indent=2)
