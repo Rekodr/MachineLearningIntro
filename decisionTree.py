@@ -163,7 +163,7 @@ class Trainer():
     def build_tree(self, attributes, data_arr, parent_node=None, edge_name=None):
         if len(data_arr) <= 1: #if the number of rows is < n return most common.
             most_common = self.most_common(data_arr) 
-            parent_node["egdes"][edge_name] = {"leaf": most_common}
+            parent_node["--"][edge_name] = {"+": most_common, "-o-": None}
             # print("{} -> {} : {}".format(parent, edge, most_common))         
             return 
         
@@ -173,18 +173,18 @@ class Trainer():
         new_node = None
         if max_gain == 0:
             most_common = self.most_common(data_arr)
-            parent_node["egdes"][edge_name] = {"leaf": most_common}
+            parent_node["--"][edge_name] = {"+": most_common, "-o-": None}
             # print("{} -> {} : {}".format(parent, edge, most_common))
             return
         else:
             new_node = {
                 "attr_node": attr_name,
-                "egdes": {}
+                "--": {}
             }
             if parent_node is None:
                 self.root_node = new_node
             else:
-                parent_node["egdes"][edge_name] = new_node
+                parent_node["--"][edge_name] = new_node
 
         new_attrs = attributes.copy()
         new_attrs.pop(attr_name, None)
@@ -203,6 +203,6 @@ if __name__ == "__main__":
     trainer = Trainer()
     trainer.targets, trainer.attributes, trainer.trainingdata = Trainer.read_data(TRAINING_DATASET)
     trainer.train()
-    
+
     with open(MODEL_FILE, 'w') as f:  
         json.dump(trainer.root_node, f, indent=2)

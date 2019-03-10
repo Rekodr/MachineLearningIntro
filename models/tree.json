@@ -1,0 +1,57 @@
+{
+  "attr_node": "Forecast",
+  "--": {
+    "Sunny": {
+      "attr_node": "Wind",
+      "--": {
+        "Strong": {
+          "+": "Yes",
+          "-o-": null
+        },
+        "Weak": {
+          "attr_node": "Water",
+          "--": {
+            "Warm": {
+              "+": "No",
+              "-o-": null
+            },
+            "Moderate": {
+              "+": "Yes",
+              "-o-": null
+            },
+            "Cold": {
+              "+": "No",
+              "-o-": null
+            }
+          }
+        }
+      }
+    },
+    "Cloudy": {
+      "+": "Yes",
+      "-o-": null
+    },
+    "Rainy": {
+      "attr_node": "Air",
+      "--": {
+        "Warm": {
+          "attr_node": "Wind",
+          "--": {
+            "Strong": {
+              "+": "Yes",
+              "-o-": null
+            },
+            "Weak": {
+              "+": "No",
+              "-o-": null
+            }
+          }
+        },
+        "Cool": {
+          "+": "No",
+          "-o-": null
+        }
+      }
+    }
+  }
+}
