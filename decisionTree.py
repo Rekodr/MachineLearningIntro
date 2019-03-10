@@ -9,6 +9,7 @@ MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
 
@@ -17,6 +18,10 @@ class DecisionTree():
     attributes = []
     trainingdata = None
     root_node = None
+    min_dataset = 1
+
+    def __init__(self, min_dataset:int=1):
+        self.min_dataset = min_dataset
 
     @staticmethod
     def get_classes(f):
@@ -159,7 +164,7 @@ class DecisionTree():
         return MC 
     
     def build_tree(self, attributes:dict, data_arr: np.array, parent_node:dict = None, edge_name:str=None):
-        if len(data_arr) <= 1: #if the number of rows is < n return most common.
+        if len(data_arr) <= self.min_dataset: #if the number of rows is < n return most common.
             most_common = self.most_common(data_arr) 
             parent_node["+"][edge_name] = {"$": most_common, "@": None}
             return 
@@ -216,10 +221,14 @@ class DecisionTree():
         for x in X:
             predicted.append(self.classify(x))
         acc = np.mean(predicted == Y)
-        print("accuracy: {}".format(acc))
+        print("accuracy: {}".format(acc * 100))
+
+
+
+
 
 if __name__ == "__main__":
-    trainer = DecisionTree()
+    trainer = DecisionTree(min_dataset=5)
     trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
     T, attrs, test_data = DecisionTree.read_data(TEST_DATASET)
