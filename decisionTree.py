@@ -194,18 +194,21 @@ class DecisionTree():
             data = np.delete(data, attr_idx, axis=1)
             self.build_tree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
 
-
-
     def train(self):
         self.build_tree(self.attributes, self.trainingdata)
 
-
-    def test(self, training_data: np.array):
+    def classify(self, data):
         pass
+
+    def test(self, data: np.array):
+        Y = data[:, -1]
+        X = np.delete(data, -1, axis=1)
+        
 if __name__ == "__main__":
     trainer = DecisionTree()
     trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
+    trainer.test()
 
     with open(MODEL_FILE, 'w') as f:  
         json.dump(trainer.root_node, f, indent=2)
