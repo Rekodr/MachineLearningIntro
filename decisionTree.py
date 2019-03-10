@@ -8,9 +8,9 @@ from pprint import pprint
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 
 
 class DecisionTree():
@@ -179,6 +179,7 @@ class DecisionTree():
         else:
             new_node = {
                 "@": attr_name,
+                "idx": attr_idx,
                 "+": {}
             }
             if parent_node is None:
@@ -197,18 +198,35 @@ class DecisionTree():
     def train(self):
         self.build_tree(self.attributes, self.trainingdata)
 
+    def traverse(self, node, data):
+        if node["@"] is None:
+            return node["$"]
+        
+        attr_idx = node["idx"]
+        value = data[attr_idx]
+        next_node = node["+"][value]
+        d = np.delete(data, attr_idx)
+        return self.traverse(next_node, d)     
+
     def classify(self, data):
-        pass
+        predicted = self.traverse(self.root_node, data)
+        return predicted
 
     def test(self, data: np.array):
-        Y = data[:, -1]
-        X = np.delete(data, -1, axis=1)
-        
+        d = np.array(data)
+        Y = d[:, -1]
+        X = np.delete(d, -1, axis=1)
+        predicted = []
+        for x in X:
+            predicted.append(self.classify(x))
+        acc = np.mean(predicted == Y)
+        print("accuracy: {}".format(acc))
+
 if __name__ == "__main__":
     trainer = DecisionTree()
     trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
-    trainer.test()
+    trainer.test(trainer.trainingdata)
 
     # with open(MODEL_FILE, 'w') as f:  
     #     json.dump(trainer.root_node, f, indent=2)

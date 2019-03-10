@@ -1,8 +1,10 @@
 {
   "@": "Forecast",
+  "idx": 3,
   "+": {
     "Sunny": {
       "@": "Wind",
+      "idx": 0,
       "+": {
         "Strong": {
           "$": "Yes",
@@ -10,6 +12,7 @@
         },
         "Weak": {
           "@": "Water",
+          "idx": 0,
           "+": {
             "Warm": {
               "$": "No",
@@ -33,9 +36,11 @@
     },
     "Rainy": {
       "@": "Air",
+      "idx": 2,
       "+": {
         "Warm": {
           "@": "Wind",
+          "idx": 0,
           "+": {
             "Strong": {
               "$": "Yes",
