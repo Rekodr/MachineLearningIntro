@@ -158,7 +158,7 @@ class DecisionTree():
         attr_name, index,  max_G = DecisionTree.maxGrain(G)
         return attr_name, index, max_G
 
-    def most_common(self, data_arr:np.array) -> str:
+    def mostCommonValue(self, data_arr:np.array) -> str:
         MC = None # most common
         max_cnt = 0
         for target in self.targets:
@@ -183,7 +183,7 @@ class DecisionTree():
 
     def buildTree(self, attributes:attrs, data_arr: np.array, parent_node:node = None, edge_name:str=None):
         if len(data_arr) <= self.min_dataset: #if the number of rows is < n return most common.
-            leaf = self.most_common(data_arr)
+            leaf = self.mostCommonValue(data_arr)
             return DecisionTree.createNode(leaf=leaf)
         
         S = DecisionTree.setEntropy(self.targets, data_arr)
@@ -191,7 +191,7 @@ class DecisionTree():
        
         new_node = None
         if max_gain == 0:
-            leaf = self.most_common(data_arr)
+            leaf = self.mostCommonValue(data_arr)
             return DecisionTree.createNode(leaf=leaf)
         else:
             new_node = DecisionTree.createNode(attr_name=attr_name, attr_idx=attr_idx, edges={})
