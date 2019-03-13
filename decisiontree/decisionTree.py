@@ -96,11 +96,12 @@ class DecisionTree():
     min_dataset :int = 1
     root_node :node = None
 
-    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1):
+    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1, save_mdl=False):
         self.min_dataset = min_dataset
         self.trainingdata = data
         self.attributes = attributes
         self.targets = targets_cls
+        self.save_mdl = save_mdl
 
     @staticmethod
     def setEntropy(target_attrs: classes, data: np.array) -> float:
@@ -215,6 +216,10 @@ class DecisionTree():
 
     def train(self):
         self.root_node = self.buildTree(self.attributes, self.trainingdata)
+
+        if self.save_mdl is True:
+            with open(MODEL_FILE, 'w') as f:  
+                json.dump(self.root_node, f, indent=2)
         return self.root_node
 
     def traverseTree(self, currNode :node, data, mc :str=None):
@@ -257,5 +262,3 @@ if __name__ == "__main__":
     dt.test(test_data)
     pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
-    # with open(MODEL_FILE, 'w') as f:  
-    #     json.dump(trainer.root_node, f, indent=2)

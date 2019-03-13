@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 import os
-from decisionTree import DecisionTree
+from decisionTree import DecisionTree, DataParser
 
 BASE_DIR = os.path.dirname("..")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
@@ -21,10 +21,10 @@ class RandomForest:
 
     def train(self):
         for i in range(self.n_trees):
-            dc = 
+            pass
 
 if __name__ == "__main__":
-    targets, attrs, data = DecisionTree.read_data(TRAINING_DATASET)
+    targets, attrs, data = DataParser.read_data(TRAINING_DATASET)
     rf = RandomForest(data, n_trees=1)
     rf.train()
 
