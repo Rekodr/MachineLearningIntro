@@ -7,9 +7,9 @@ from typing import Any, Tuple, List, Dict, NamedTuple
 BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
@@ -176,22 +176,24 @@ class DecisionTree():
     #####################################################
     def createNode(attr_name=None, attr_idx=None, leaf=None, edges=None) -> node:
         return {
-            "name": attr_name,
+            "aname": attr_name,
             "idx": attr_idx,
-            "leaf": leaf
+            "children": {},
+            "leaf": leaf,
+            "mc": None
         }
 
-    def buildTree(self, attributes:attrs, data_arr: np.array, parent_node:node = None, edge_name:str=None):
-        if len(data_arr) <= self.min_dataset: #if the number of rows is < n return most common.
-            leaf = self.mostCommonValue(data_arr)
+    def buildTree(self, attributes:attrs, data: np.array) -> node:
+        if len(data) <= self.min_dataset: #if the number of rows is < n return most common.
+            leaf = self.mostCommonValue(data)
             return DecisionTree.createNode(leaf=leaf)
         
-        S = DecisionTree.setEntropy(self.targets, data_arr)
-        attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data_arr, S)
+        S = DecisionTree.setEntropy(self.targets, data)
+        attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data, S)
        
         new_node = None
         if max_gain == 0:
-            leaf = self.mostCommonValue(data_arr)
+            leaf = self.mostCommonValue(data)
             return DecisionTree.createNode(leaf=leaf)
         else:
             new_node = DecisionTree.createNode(attr_name=attr_name, attr_idx=attr_idx, edges={})
@@ -199,27 +201,33 @@ class DecisionTree():
         new_attrs = attributes.copy()
         new_attrs.pop(attr_name, None)
         for attr_value in attributes[attr_name]:
-            data = data_arr[:, attr_idx] == attr_value
-            data = data_arr[data]
-            data = np.delete(data, attr_idx, axis=1)
-            child = self.buildTree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
-            new_node[attr_value] = child
-        
+            subData_idxs = data[:, attr_idx] == attr_value
+            subData = data[subData_idxs]
+            subData = np.delete(subData, attr_idx, axis=1) # remove traited attr
+            child = self.buildTree(new_attrs, subData)
+            new_node["children"][attr_value] = child
+        new_node["mc"] = self.mostCommonValue(data)
         return new_node
 
     def train(self):
         self.root_node = self.buildTree(self.attributes, self.trainingdata)
         return self.root_node
 
-    def traverseTree(self, node, data):
-        if node["name"] is None:
-            return node["leaf"]
+    def traverseTree(self, currNode, data, mc=None):
+        if currNode["aname"] is None:
+            leaf = currNode["leaf"]
+            if leaf is None:
+                return mc
+            return leaf
         
-        attr_idx = node["idx"]
+        attr_idx = currNode["idx"]
         value = data[attr_idx]
-        next_node = node[value]
+        next_node = currNode["children"][value]
+        if next_node is None:
+            raise Exception("Unkown attribute: {}".format(value))
+
         d = np.delete(data, attr_idx)
-        return self.traverseTree(next_node, d)     
+        return self.traverseTree(next_node, d, mc=currNode["mc"])     
 
     def classify(self, data):
         predicted = self.traverseTree(self.root_node, data)
@@ -235,15 +243,13 @@ class DecisionTree():
         acc = np.mean(predicted == Y)
         print("accuracy: {}".format(acc * 100))
 
-
-
 if __name__ == "__main__":
-    trainer = DecisionTree(min_dataset=1)
+    trainer = DecisionTree(min_dataset=5)
     trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
     trainer.train()
     T, a, test_data = DecisionTree.read_data(TEST_DATASET)
     trainer.test(trainer.trainingdata)
-    #trainer.test(test_data)
+    trainer.test(test_data)
 
     # with open(MODEL_FILE, 'w') as f:  
     #     json.dump(trainer.root_node, f, indent=2)
