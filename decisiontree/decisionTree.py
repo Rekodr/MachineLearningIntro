@@ -216,6 +216,8 @@ class DecisionTree():
             data = data_arr[data]
             data = np.delete(data, attr_idx, axis=1)
             self.buildTree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
+        
+        return new_node
 
     def train(self):
         self.buildTree(self.attributes, self.trainingdata)
