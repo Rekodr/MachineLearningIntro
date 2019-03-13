@@ -3,6 +3,7 @@ import os
 import math
 import json
 from typing import Any, Tuple, List, Dict, NamedTuple
+import time
 
 BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
@@ -95,12 +96,15 @@ class DecisionTree():
     trainingdata :np.array = None
     min_dataset :int = 1
     root_node :node = None
+    n_random_attr = None
 
-    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1, save_mdl=False):
+    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1, n_random_attr=None, save_mdl=False):
         self.min_dataset = min_dataset
         self.trainingdata = data
         self.attributes = attributes
         self.targets = targets_cls
+        if n_random_attr:
+            self.n_random_attr = int(n_random_attr)
         self.save_mdl = save_mdl
 
     @staticmethod
@@ -159,7 +163,7 @@ class DecisionTree():
                 MC = target
         return MC 
     
-    def createNode(attr_name :str=None, attr_idx :int=None, leaf :int=None, edges :Dict[str, Any]=None) -> node:
+    def createNode(attr_name :str=None, attr_idx :int=None, leaf :int=None, children :Dict[str, Any]=None) -> node:
         return {
             "aname": attr_name,
             "idx": attr_idx,
@@ -169,7 +173,7 @@ class DecisionTree():
         }
 
     @staticmethod
-    def bestSplit(targets :classes, attributes :attrs, data :np.array, S :float) -> maxgain:
+    def bestSplit(targets :classes, attributes :attrs, data :np.array, S :float, n_random_attr=None) -> maxgain:
         target_groups = []
         G = []
         for target in targets:
@@ -178,12 +182,22 @@ class DecisionTree():
             target_groups.append(r)
 
         N = len(data)
-        for idx, attr_name in enumerate(attributes):
+        A = attributes
+        idxs = []
+        if n_random_attr is not None and n_random_attr < len(A):
+            idxs = np.random.choice(len(A), size=n_random_attr, replace=False)
+
+        for idx, attr_name in enumerate(A):
             g = S
-            for attr_value in attributes[attr_name]: #loop throup attr values
+            for attr_value in A[attr_name]: #loop throup attr values
                 E = DecisionTree.entropy(attr_value, idx, target_groups, N)
                 g -= E
-            G.append((idx, attr_name, g))
+
+            if n_random_attr and n_random_attr < len(A):
+                if idx in idxs:
+                    G.append((idx, attr_name, g))
+            else:
+                G.append((idx, attr_name, g))
 
         attr_name, index,  max_G = DecisionTree.maxGrain(G)
         return attr_name, index, max_G
@@ -194,15 +208,13 @@ class DecisionTree():
             return DecisionTree.createNode(leaf=leaf)
         
         S = DecisionTree.setEntropy(self.targets, data)
-        attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data, S)
+        attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data, S, self.n_random_attr)
        
-        new_node = None
         if max_gain == 0:
             leaf = self.mostCommonValue(data)
             return DecisionTree.createNode(leaf=leaf)
-        else:
-            new_node = DecisionTree.createNode(attr_name=attr_name, attr_idx=attr_idx, edges={})
-
+        
+        new_node = DecisionTree.createNode(attr_name=attr_name, attr_idx=attr_idx)
         new_attrs = attributes.copy()
         new_attrs.pop(attr_name, None)
         for attr_value in attributes[attr_name]:
@@ -254,8 +266,8 @@ class DecisionTree():
         print("accuracy: {}".format(acc * 100))
 
 if __name__ == "__main__":
-    tgt_cls, attrs, data = DataParser.read_data(TRAINING_DATASET)
-    dt = DecisionTree(data, attributes=attrs, targets_cls=tgt_cls ,min_dataset=5)
+    tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
+    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5,  n_random_attr=math.sqrt(len(A)))
     dt.train()
     T, a, test_data = DataParser.read_data(TEST_DATASET)
     dt.test(data)

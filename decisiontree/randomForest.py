@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 import os
-from scipy import stats
+import math
 from decisionTree import DecisionTree, DataParser, attrs, classes
 
 BASE_DIR = os.path.dirname("..")
@@ -27,7 +27,8 @@ class RandomForest:
 
     def train(self):
         for i in range(self.n_trees):
-            dt :DecisionTree = DecisionTree(self.data, attributes=self.attributes, targets_cls=self.targets ,min_dataset=self.min_dataset)
+            dt :DecisionTree = DecisionTree(self.data, attributes=self.attributes, targets_cls=self.targets 
+                ,min_dataset=self.min_dataset, n_random_attr=math.sqrt(len(self.attributes)))
             dt.train()
             self.trees.append(dt)
 
@@ -54,12 +55,36 @@ class RandomForest:
         for x in X:
             predicted.append(self.classify(x))
         acc = np.mean(predicted == Y)
-        print("accuracy: {}".format(acc * 100))
+        print("N: {} cut: {} cut: {}".format(self.n_trees, self.min_dataset ,acc * 100))
+        return acc
+
+
+def train_loop(min_ntrees, max_ntrees):
+    max_acc = 0.0
+    n = 0
+    cut = 1
+    targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
+    T, a, test_data = DataParser.read_data(TEST_DATASET)
+
+    for i in range(min_ntrees, max_ntrees + 1):
+        for ncut in range(1, len(attributes) + 1):
+            for j in range(0, 10):
+                rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
+                rf.train()
+                acc = rf.test(test_data)
+                if acc > max_acc:
+                    max_acc = acc
+                    n = i
+                    cut = ncut
+    
+    print("Best N: {}, cut: {}, acc: {}".format(n, cut, max_acc))
 
 
 if __name__ == "__main__":
-    targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
-    rf = RandomForest(data, attributes, targets, n_trees=4)
-    rf.train()
-    rf.test(data)
-
+    # targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
+    # T, a, test_data = DataParser.read_data(TEST_DATASET)
+    # rf = RandomForest(data, attributes, targets, n_trees=13, min_dataset=5)
+    # rf.train()
+    # rf.test(data)
+    # rf.test(test_data)
+    train_loop(1, 4)
