@@ -2,7 +2,7 @@ import numpy as np
 import os
 import math
 import json
-from typing import Tuple, List, Dict
+from typing import Any, Tuple, List, Dict, NamedTuple
 
 BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
@@ -172,11 +172,17 @@ class DecisionTree():
     #####################################################
     # @defined types
     attrs = Dict[str, tuple]  # e.g: {'Wind': ('Strong', 'Weak'), 'Water': ('Warm', 'Moderate', 'Cold')}
+    node = Dict[str, Any]
     #####################################################    
-    def buildTree(self, attributes:attrs, data_arr: np.array, parent_node:dict = None, edge_name:str=None):
+    def buildTree(self, attributes:attrs, data_arr: np.array, parent_node:node = None, edge_name:str=None):
         if len(data_arr) <= self.min_dataset: #if the number of rows is < n return most common.
-            most_common = self.most_common(data_arr) 
-            parent_node["+"][edge_name] = {"$": most_common, "@": None}
+            most_common = self.most_common(data_arr)
+            new_node = {
+                "@": None,
+                "idx": None,
+                "$": most_common
+            }
+            parent_node["+"][edge_name] = new_node
             return 
         
         S = DecisionTree.setEntropy(self.targets, data_arr)
@@ -185,7 +191,12 @@ class DecisionTree():
         new_node = None
         if max_gain == 0:
             most_common = self.most_common(data_arr)
-            parent_node["+"][edge_name] = {"$": most_common, "@": None}
+            new_node = {
+                "@": None,
+                "idx": None,
+                "$": most_common
+            }
+            parent_node["+"][edge_name] = new_node
             return
         else:
             new_node = {
