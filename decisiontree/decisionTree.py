@@ -183,7 +183,7 @@ class DecisionTree():
                 "$": most_common
             }
             parent_node["+"][edge_name] = new_node
-            return 
+            return new_node
         
         S = DecisionTree.setEntropy(self.targets, data_arr)
         attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data_arr, S)
@@ -197,7 +197,7 @@ class DecisionTree():
                 "$": most_common
             }
             parent_node["+"][edge_name] = new_node
-            return
+            return new_node
         else:
             new_node = {
                 "@": attr_name,
