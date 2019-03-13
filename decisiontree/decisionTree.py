@@ -14,18 +14,28 @@ TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.dat
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
 
+#####################################################
+# @defined types
+classes = List[str]
+attrs = Dict[str, tuple]  # e.g: {'Wind': ('Strong', 'Weak'), 'Water': ('Warm', 'Moderate', 'Cold')}
+node = Dict[str, Any]
+gainsList = List[float]
+maxgain = Tuple[str, int, float]
+#####################################################
+
 class DecisionTree():
-    targets = []
-    attributes = []
-    trainingdata = None
-    root_node = None
-    min_dataset = 1
+
+    targets:classes = []
+    attributes :attrs = {}
+    trainingdata :np.array = None
+    root_node :node = None
+    min_dataset :int = 1
 
     def __init__(self, min_dataset:int=1):
         self.min_dataset = min_dataset
 
     @staticmethod
-    def get_classes(f):
+    def get_classes(f) -> classes:
         n = f.readline()
         try:
             n = int(n)
@@ -33,15 +43,15 @@ class DecisionTree():
             raise Exception("Invalid file format")
         
         l = f.readline().strip()
-        C = l.split(",")
+        C :classes = l.split(",")
         if len(C) != n:
             raise Exception("Invalid file format")
         return C
     
     @staticmethod
-    def get_variables(f):
+    def get_variables(f) -> attrs:
         n = f.readline()
-        V = {}
+        V :attrs = {}
         try:
             n = int(n)
         except ValueError:
@@ -90,7 +100,7 @@ class DecisionTree():
         f.close()
 
     @staticmethod
-    def setEntropy(target_attrs, data: np.array) -> float:
+    def setEntropy(target_attrs: classes, data: np.array) -> float:
         targets = data[:, -1]
         Y, counts = np.unique(targets, return_counts=True)
         size = len(targets)
@@ -101,7 +111,7 @@ class DecisionTree():
         return E
 
     @staticmethod
-    def entropy(attr_value:str, attr_idx:int, target_groups, sample_size:int):
+    def entropy(attr_value :str, attr_idx :int, target_groups :np.array, sample_size :int) -> float:
         E = 0
         value_cnt_per_grp = []
         attr_cnt = 0
@@ -121,13 +131,8 @@ class DecisionTree():
         s = E * attr_cnt/sample_size
         return s
 
-    #####################################################
-    # @defined types
-    gainsList = List[float]
-    maxgain = Tuple[str, int, float]
-    #####################################################
     @staticmethod
-    def maxGrain(G:gainsList) -> maxgain:
+    def maxGrain(G :gainsList) -> maxgain:
         maxGain = 0.0
         attr_name = ""
         attr_idx = 0
@@ -138,27 +143,8 @@ class DecisionTree():
                 attr_idx = idx
         return (attr_name, attr_idx, maxGain)       
 
-    @staticmethod
-    def bestSplit(targets, attrs:dict, data:np.array, S:float) -> maxgain:
-        target_groups = []
-        G = []
-        for target in targets:
-            t = data[:, -1] == target
-            r = data[t]
-            target_groups.append(r)
 
-        N = len(data)
-        for idx, attr_name in enumerate(attrs):
-            g = S
-            for attr_value in attrs[attr_name]: #loop throup attr values
-                E = DecisionTree.entropy(attr_value, idx, target_groups, N)
-                g -= E
-            G.append((idx, attr_name, g))
-
-        attr_name, index,  max_G = DecisionTree.maxGrain(G)
-        return attr_name, index, max_G
-
-    def mostCommonValue(self, data_arr:np.array) -> str:
+    def mostCommonValue(self, data_arr :np.array) -> str:
         MC = None # most common
         max_cnt = 0
         for target in self.targets:
@@ -169,12 +155,7 @@ class DecisionTree():
                 MC = target
         return MC 
     
-    #####################################################
-    # @defined types
-    attrs = Dict[str, tuple]  # e.g: {'Wind': ('Strong', 'Weak'), 'Water': ('Warm', 'Moderate', 'Cold')}
-    node = Dict[str, Any]
-    #####################################################
-    def createNode(attr_name=None, attr_idx=None, leaf=None, edges=None) -> node:
+    def createNode(attr_name :str=None, attr_idx :int=None, leaf :int=None, edges :Dict[str, Any]=None) -> node:
         return {
             "aname": attr_name,
             "idx": attr_idx,
@@ -183,7 +164,27 @@ class DecisionTree():
             "mc": None
         }
 
-    def buildTree(self, attributes:attrs, data: np.array) -> node:
+    @staticmethod
+    def bestSplit(targets :classes, attributes :attrs, data :np.array, S :float) -> maxgain:
+        target_groups = []
+        G = []
+        for target in targets:
+            t = data[:, -1] == target
+            r = data[t]
+            target_groups.append(r)
+
+        N = len(data)
+        for idx, attr_name in enumerate(attributes):
+            g = S
+            for attr_value in attributes[attr_name]: #loop throup attr values
+                E = DecisionTree.entropy(attr_value, idx, target_groups, N)
+                g -= E
+            G.append((idx, attr_name, g))
+
+        attr_name, index,  max_G = DecisionTree.maxGrain(G)
+        return attr_name, index, max_G
+
+    def buildTree(self, attributes :attrs, data :np.array) -> node:
         if len(data) <= self.min_dataset: #if the number of rows is < n return most common.
             leaf = self.mostCommonValue(data)
             return DecisionTree.createNode(leaf=leaf)
@@ -213,7 +214,7 @@ class DecisionTree():
         self.root_node = self.buildTree(self.attributes, self.trainingdata)
         return self.root_node
 
-    def traverseTree(self, currNode, data, mc=None):
+    def traverseTree(self, currNode :node, data, mc :str=None):
         if currNode["aname"] is None:
             leaf = currNode["leaf"]
             if leaf is None:
@@ -230,6 +231,7 @@ class DecisionTree():
         return self.traverseTree(next_node, d, mc=currNode["mc"])     
 
     def classify(self, data):
+        data = np.array(data)
         predicted = self.traverseTree(self.root_node, data)
         return predicted
 
@@ -244,12 +246,13 @@ class DecisionTree():
         print("accuracy: {}".format(acc * 100))
 
 if __name__ == "__main__":
-    trainer = DecisionTree(min_dataset=5)
-    trainer.targets, trainer.attributes, trainer.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
-    trainer.train()
+    dt = DecisionTree(min_dataset=5)
+    dt.targets, dt.attributes, dt.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
+    dt.train()
     T, a, test_data = DecisionTree.read_data(TEST_DATASET)
-    trainer.test(trainer.trainingdata)
-    trainer.test(test_data)
-
+    dt.test(dt.trainingdata)
+    dt.test(test_data)
+    pred = dt.classify(("high","low","5","4","big","low"))
+    # print(pred)
     # with open(MODEL_FILE, 'w') as f:  
     #     json.dump(trainer.root_node, f, indent=2)
