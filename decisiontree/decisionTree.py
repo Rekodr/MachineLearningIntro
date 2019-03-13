@@ -93,11 +93,14 @@ class DecisionTree():
     targets:classes = []
     attributes :attrs = {}
     trainingdata :np.array = None
-    root_node :node = None
     min_dataset :int = 1
+    root_node :node = None
 
-    def __init__(self, min_dataset:int=1):
+    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1):
         self.min_dataset = min_dataset
+        self.trainingdata = data
+        self.attributes = attributes
+        self.targets = targets_cls
 
     @staticmethod
     def setEntropy(target_attrs: classes, data: np.array) -> float:
@@ -246,11 +249,11 @@ class DecisionTree():
         print("accuracy: {}".format(acc * 100))
 
 if __name__ == "__main__":
-    dt = DecisionTree(min_dataset=5)
-    dt.targets, dt.attributes, dt.trainingdata = DataParser.read_data(TRAINING_DATASET)
+    tgt_cls, attrs, data = DataParser.read_data(TRAINING_DATASET)
+    dt = DecisionTree(data, attributes=attrs, targets_cls=tgt_cls ,min_dataset=5)
     dt.train()
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt.test(dt.trainingdata)
+    dt.test(data)
     dt.test(test_data)
     pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
