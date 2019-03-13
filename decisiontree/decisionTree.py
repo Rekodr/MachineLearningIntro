@@ -97,12 +97,15 @@ class DecisionTree():
     min_dataset :int = 1
     root_node :node = None
     n_random_attr = None
+    validation_data = None
+    test_acc = 0.0
 
-    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1, n_random_attr=None, save_mdl=False):
+    def __init__(self, data :np.array, attributes :attrs, targets_cls :classes, min_dataset:int=1, prune=False, n_random_attr=None, save_mdl=False):
         self.min_dataset = min_dataset
         self.trainingdata = data
         self.attributes = attributes
         self.targets = targets_cls
+        self.prunne = prune
         if n_random_attr:
             self.n_random_attr = int(n_random_attr)
         self.save_mdl = save_mdl
@@ -226,13 +229,6 @@ class DecisionTree():
         new_node["mc"] = self.mostCommonValue(data)
         return new_node
 
-    def train(self):
-        self.root_node = self.buildTree(self.attributes, self.trainingdata)
-
-        if self.save_mdl is True:
-            with open(MODEL_FILE, 'w') as f:  
-                json.dump(self.root_node, f, indent=2)
-        return self.root_node
 
     def traverseTree(self, currNode :node, data, mc :str=None):
         if currNode["aname"] is None:
@@ -250,6 +246,38 @@ class DecisionTree():
         d = np.delete(data, attr_idx)
         return self.traverseTree(next_node, d, mc=currNode["mc"])     
 
+    def traverseTreePruneREP(self, currNode: node, mc :str=None):
+        """
+        Reduced error pruning
+        """
+        leaf = currNode["leaf"]
+        if leaf is not None:
+            currNode["leaf"] = None
+            acc = self.test(self.validation_data)
+            if acc < self.test_acc:
+                currNode["leaf"] = leaf
+            else:
+                self.test_acc = acc
+        else:
+            children = currNode["children"]
+            for key in children:
+                child = children[key]
+                self.traverseTreePruneREP(child, mc=currNode["mc"])
+
+    def pruneCCP(self):
+        """
+        Cost complexity pruning
+        """
+        tree = dict(self.root_node)
+
+    def prunneTree(self, model="rep"):
+        print("before pruning: {}".format(dt.test_acc))
+        if model == "rep":
+            self.traverseTreePruneREP(self.root_node)
+        elif model == "ccp":
+            self.pruneCCP()
+        print("after prunning {}".format(dt.test_acc))
+
     def classify(self, data):
         data = np.array(data)
         predicted = self.traverseTree(self.root_node, data)
@@ -263,14 +291,32 @@ class DecisionTree():
         for x in X:
             predicted.append(self.classify(x))
         acc = np.mean(predicted == Y)
-        print("accuracy: {}".format(acc * 100))
+        return acc
+
+    def train(self, validationData=None, prune_tch="rep"):
+        self.root_node = self.buildTree(self.attributes, self.trainingdata)
+        if validationData is not None:
+            acc = self.test(validationData)
+            self.test_acc = acc
+            print("accuracy: {}".format(acc))
+
+        if self.prunne:
+            if validationData is None:
+                raise Exception("validation data is required for prunning")
+            else:
+                self.validation_data = validationData
+                self.prunneTree(model=prune_tch)
+        
+        if self.save_mdl is True:
+            with open(MODEL_FILE, 'w') as f:  
+                json.dump(self.root_node, f, indent=2)
+        return self.root_node
+
 
 if __name__ == "__main__":
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
-    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5,  n_random_attr=math.sqrt(len(A)))
-    dt.train()
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt.test(data)
-    dt.test(test_data)
-    pred = dt.classify(("high","low","5","4","big","low"))
+    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True)
+    dt.train(validationData=test_data)
+    # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)

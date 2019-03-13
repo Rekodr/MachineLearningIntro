@@ -81,10 +81,10 @@ def train_loop(min_ntrees, max_ntrees):
 
 
 if __name__ == "__main__":
-    # targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
-    # T, a, test_data = DataParser.read_data(TEST_DATASET)
-    # rf = RandomForest(data, attributes, targets, n_trees=13, min_dataset=5)
-    # rf.train()
-    # rf.test(data)
-    # rf.test(test_data)
-    train_loop(1, 4)
+    targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
+    T, a, test_data = DataParser.read_data(TEST_DATASET)
+    rf = RandomForest(data, attributes, targets, n_trees=13, min_dataset=5)
+    rf.train()
+    rf.test(data)
+    rf.test(test_data)
+    #train_loop(1, 2)
