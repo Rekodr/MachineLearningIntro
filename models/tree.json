@@ -1,62 +1,65 @@
 {
-  "@": "Forecast",
+  "name": "Forecast",
   "idx": 3,
-  "+": {
-    "Sunny": {
-      "@": "Wind",
+  "leaf": null,
+  "Sunny": {
+    "name": "Wind",
+    "idx": 0,
+    "leaf": null,
+    "Strong": {
+      "name": null,
+      "idx": null,
+      "leaf": "Yes"
+    },
+    "Weak": {
+      "name": "Water",
       "idx": 0,
-      "+": {
-        "Strong": {
-          "$": "Yes",
-          "@": null
-        },
-        "Weak": {
-          "@": "Water",
-          "idx": 0,
-          "+": {
-            "Warm": {
-              "$": "No",
-              "@": null
-            },
-            "Moderate": {
-              "$": "Yes",
-              "@": null
-            },
-            "Cold": {
-              "$": "No",
-              "@": null
-            }
-          }
-        }
+      "leaf": null,
+      "Warm": {
+        "name": null,
+        "idx": null,
+        "leaf": "No"
+      },
+      "Moderate": {
+        "name": null,
+        "idx": null,
+        "leaf": "Yes"
+      },
+      "Cold": {
+        "name": null,
+        "idx": null,
+        "leaf": "No"
+      }
+    }
+  },
+  "Cloudy": {
+    "name": null,
+    "idx": null,
+    "leaf": "Yes"
+  },
+  "Rainy": {
+    "name": "Air",
+    "idx": 2,
+    "leaf": null,
+    "Warm": {
+      "name": "Wind",
+      "idx": 0,
+      "leaf": null,
+      "Strong": {
+        "name": null,
+        "idx": null,
+        "leaf": "Yes"
+      },
+      "Weak": {
+        "name": null,
+        "idx": null,
+        "leaf": "No"
       }
     },
-    "Cloudy": {
-      "$": "Yes",
-      "@": null
-    },
-    "Rainy": {
-      "@": "Air",
-      "idx": 2,
-      "+": {
-        "Warm": {
-          "@": "Wind",
-          "idx": 0,
-          "+": {
-            "Strong": {
-              "$": "Yes",
-              "@": null
-            },
-            "Weak": {
-              "$": "No",
-              "@": null
-            }
-          }
-        },
-        "Cool": {
-          "$": "No",
-          "@": null
-        }
-      }
+    "Cool": {
+      "name": null,
+      "idx": null,
+      "leaf": "No"
     }
   }
 }

@@ -173,41 +173,28 @@ class DecisionTree():
     # @defined types
     attrs = Dict[str, tuple]  # e.g: {'Wind': ('Strong', 'Weak'), 'Water': ('Warm', 'Moderate', 'Cold')}
     node = Dict[str, Any]
-    #####################################################    
+    #####################################################
+    def createNode(attr_name=None, attr_idx=None, leaf=None, edges=None) -> node:
+        return {
+            "name": attr_name,
+            "idx": attr_idx,
+            "leaf": leaf
+        }
+
     def buildTree(self, attributes:attrs, data_arr: np.array, parent_node:node = None, edge_name:str=None):
         if len(data_arr) <= self.min_dataset: #if the number of rows is < n return most common.
-            most_common = self.most_common(data_arr)
-            new_node = {
-                "@": None,
-                "idx": None,
-                "$": most_common
-            }
-            parent_node["+"][edge_name] = new_node
-            return new_node
+            leaf = self.most_common(data_arr)
+            return DecisionTree.createNode(leaf=leaf)
         
         S = DecisionTree.setEntropy(self.targets, data_arr)
         attr_name, attr_idx, max_gain = DecisionTree.bestSplit(self.targets, attributes, data_arr, S)
        
         new_node = None
         if max_gain == 0:
-            most_common = self.most_common(data_arr)
-            new_node = {
-                "@": None,
-                "idx": None,
-                "$": most_common
-            }
-            parent_node["+"][edge_name] = new_node
-            return new_node
+            leaf = self.most_common(data_arr)
+            return DecisionTree.createNode(leaf=leaf)
         else:
-            new_node = {
-                "@": attr_name,
-                "idx": attr_idx,
-                "+": {}
-            }
-            if parent_node is None:
-                self.root_node = new_node
-            else:
-                parent_node["+"][edge_name] = new_node
+            new_node = DecisionTree.createNode(attr_name=attr_name, attr_idx=attr_idx, edges={})
 
         new_attrs = attributes.copy()
         new_attrs.pop(attr_name, None)
@@ -215,21 +202,22 @@ class DecisionTree():
             data = data_arr[:, attr_idx] == attr_value
             data = data_arr[data]
             data = np.delete(data, attr_idx, axis=1)
-            self.buildTree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
+            child = self.buildTree(new_attrs, data, parent_node=new_node, edge_name=attr_value)
+            new_node[attr_value] = child
         
         return new_node
 
     def train(self):
-        self.buildTree(self.attributes, self.trainingdata)
+        self.root_node = self.buildTree(self.attributes, self.trainingdata)
         return self.root_node
 
     def traverseTree(self, node, data):
-        if node["@"] is None:
-            return node["$"]
+        if node["name"] is None:
+            return node["leaf"]
         
         attr_idx = node["idx"]
         value = data[attr_idx]
-        next_node = node["+"][value]
+        next_node = node[value]
         d = np.delete(data, attr_idx)
         return self.traverseTree(next_node, d)     
 
@@ -255,6 +243,7 @@ if __name__ == "__main__":
     trainer.train()
     T, a, test_data = DecisionTree.read_data(TEST_DATASET)
     trainer.test(trainer.trainingdata)
+    #trainer.test(test_data)
 
     # with open(MODEL_FILE, 'w') as f:  
     #     json.dump(trainer.root_node, f, indent=2)
