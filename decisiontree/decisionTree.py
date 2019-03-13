@@ -23,19 +23,9 @@ gainsList = List[float]
 maxgain = Tuple[str, int, float]
 #####################################################
 
-class DecisionTree():
-
-    targets:classes = []
-    attributes :attrs = {}
-    trainingdata :np.array = None
-    root_node :node = None
-    min_dataset :int = 1
-
-    def __init__(self, min_dataset:int=1):
-        self.min_dataset = min_dataset
-
-    @staticmethod
-    def get_classes(f) -> classes:
+class DataParser():
+    @classmethod
+    def get_classes(cls, f) -> classes:
         n = f.readline()
         try:
             n = int(n)
@@ -48,8 +38,8 @@ class DecisionTree():
             raise Exception("Invalid file format")
         return C
     
-    @staticmethod
-    def get_variables(f) -> attrs:
+    @classmethod
+    def get_variables(cls, f) -> attrs:
         n = f.readline()
         V :attrs = {}
         try:
@@ -74,8 +64,8 @@ class DecisionTree():
 
         return V
     
-    @staticmethod
-    def get_samples(f) -> np.array:
+    @classmethod
+    def get_samples(cls, f) -> np.array:
         n = f.readline()
         s = []
         try:
@@ -93,11 +83,21 @@ class DecisionTree():
     @staticmethod
     def read_data(data_path: str):
         with open(data_path, "r") as f:
-            C = DecisionTree.get_classes(f)
-            V = DecisionTree.get_variables(f)
-            D :np.array = DecisionTree.get_samples(f)
+            C = DataParser.get_classes(f)
+            V = DataParser.get_variables(f)
+            D :np.array = DataParser.get_samples(f)
             return C, V, D
         f.close()
+
+class DecisionTree():
+    targets:classes = []
+    attributes :attrs = {}
+    trainingdata :np.array = None
+    root_node :node = None
+    min_dataset :int = 1
+
+    def __init__(self, min_dataset:int=1):
+        self.min_dataset = min_dataset
 
     @staticmethod
     def setEntropy(target_attrs: classes, data: np.array) -> float:
@@ -247,9 +247,9 @@ class DecisionTree():
 
 if __name__ == "__main__":
     dt = DecisionTree(min_dataset=5)
-    dt.targets, dt.attributes, dt.trainingdata = DecisionTree.read_data(TRAINING_DATASET)
+    dt.targets, dt.attributes, dt.trainingdata = DataParser.read_data(TRAINING_DATASET)
     dt.train()
-    T, a, test_data = DecisionTree.read_data(TEST_DATASET)
+    T, a, test_data = DataParser.read_data(TEST_DATASET)
     dt.test(dt.trainingdata)
     dt.test(test_data)
     pred = dt.classify(("high","low","5","4","big","low"))

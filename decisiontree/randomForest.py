@@ -21,7 +21,7 @@ class RandomForest:
 
     def train(self):
         for i in range(self.n_trees):
-            print(i)
+            dc = 
 
 if __name__ == "__main__":
     targets, attrs, data = DecisionTree.read_data(TRAINING_DATASET)
