@@ -19,10 +19,12 @@ class RandomForest:
         self.n_trees = n_trees
         self.min_dataset = min_dataset
 
-    def train():
-        pass
+    def train(self):
+        for i in range(self.n_trees):
+            pass
 
 if __name__ == "__main__":
     targets, attrs, data = DecisionTree.read_data(TRAINING_DATASET)
     rf = RandomForest(data, n_trees=1)
+    rf.train()
 
