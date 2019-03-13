@@ -4,13 +4,14 @@ import math
 import json
 from typing import Any, Tuple, List, Dict, NamedTuple
 import time
+from pprint import pprint
 
 BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
@@ -264,18 +265,9 @@ class DecisionTree():
                 child = children[key]
                 self.traverseTreePruneREP(child, mc=currNode["mc"])
 
-    def pruneCCP(self):
-        """
-        Cost complexity pruning
-        """
-        tree = dict(self.root_node)
-
-    def prunneTree(self, model="rep"):
+    def prunneTree(self):
         print("before pruning: {}".format(dt.test_acc))
-        if model == "rep":
-            self.traverseTreePruneREP(self.root_node)
-        elif model == "ccp":
-            self.pruneCCP()
+        self.traverseTreePruneREP(self.root_node)
         print("after prunning {}".format(dt.test_acc))
 
     def classify(self, data):
@@ -293,7 +285,7 @@ class DecisionTree():
         acc = np.mean(predicted == Y)
         return acc
 
-    def train(self, validationData=None, prune_tch="rep"):
+    def train(self, validationData=None):
         self.root_node = self.buildTree(self.attributes, self.trainingdata)
         if validationData is not None:
             acc = self.test(validationData)
@@ -305,7 +297,7 @@ class DecisionTree():
                 raise Exception("validation data is required for prunning")
             else:
                 self.validation_data = validationData
-                self.prunneTree(model=prune_tch)
+                self.prunneTree()
         
         if self.save_mdl is True:
             with open(MODEL_FILE, 'w') as f:  
@@ -316,7 +308,7 @@ class DecisionTree():
 if __name__ == "__main__":
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True)
-    dt.train(validationData=test_data)
+    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=1, prune=True)
+    dt.train(validationData=data)
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
