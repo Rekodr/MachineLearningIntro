@@ -1,5 +1,6 @@
 from typing import List
 import numpy as np
+import pandas as pd
 import os
 import math
 from decisionTree import DecisionTree, DataParser, attrs, classes
@@ -61,7 +62,6 @@ class RandomForest:
         for x in X:
             predicted.append(self.classify(x))
         acc = np.mean(predicted == Y)
-        print("N: {} cut: {} cut: {}".format(self.n_trees, self.min_dataset ,acc * 100))
         return acc
 
 
@@ -74,17 +74,23 @@ def train_loop(min_ntrees, max_ntrees):
     n = int(len(data) * .30)
     idxs = np.random.randint( len(test_data), size=n)
     validationData = test_data[idxs, :]
-    for i in range(min_ntrees, max_ntrees + 1):
+
+    R = []
+    for i in range(min_ntrees, max_ntrees + 1, 2):
         for ncut in range(1, len(attributes) + 1):
-            for j in range(0, 5):
+            for j in range(0, 6):
                 rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
                 rf.train(validationData=validationData)
                 acc = rf.test(test_data)
+                R.append([i, ncut, acc * 100])
+                print("N: {} cut: {} cut: {}".format(i, ncut ,acc * 100))
                 if acc > max_acc:
                     max_acc = acc
                     n = i
                     cut = ncut
-    
+    df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
+    df = df.astype({"trees": int, "split_attr": int})
+    df.to_csv("results.csv", index=False)
     print("Best N: {}, cut: {}, acc: {}".format(n, cut, max_acc))
 
 
