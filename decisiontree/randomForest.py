@@ -10,7 +10,7 @@ from decisionTree import DecisionTree, DataParser, attrs, classes
 num_cores = multiprocessing.cpu_count()
 
 BASE_DIR = os.path.dirname("..")
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "nursery.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
@@ -73,9 +73,10 @@ class RandomForest:
 
 def processConfig(data, test_data, attributes, targets, i):
     R = []
+    d = np.array(data)
     for ncut in range(1, len(attributes) + 8):
         for j in range(0, 5):
-            rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
+            rf = RandomForest(d, attributes, targets, n_trees=i, min_dataset=ncut)
             rf.train()
             acc = rf.test(test_data)
             R.append([i, ncut, acc * 100])
@@ -105,7 +106,7 @@ def train_loop(min_ntrees, max_ntrees):
     
     df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
     df = df.astype({"trees": int, "split_attr": int})
-    df.to_csv("results.csv", index=False)
+    df.to_csv("resultsNursing.csv", index=False)
 
 
 if __name__ == "__main__":

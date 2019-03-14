@@ -266,9 +266,9 @@ class DecisionTree():
                 self.traverseTreePruneREP(child, mc=currNode["mc"])
 
     def prunneTree(self):
-        # print("before pruning: {}".format(self.test_acc))
+        print("before pruning: {}".format(self.test_acc))
         self.traverseTreePruneREP(self.root_node)
-        # print("after prunning {}".format(self.test_acc))
+        print("after prunning {}".format(self.test_acc))
 
     def classify(self, data):
         data = np.array(data)
@@ -305,24 +305,6 @@ class DecisionTree():
 
 def train_loop(itr=1):
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
-    T, a, test_data = DataParser.read_data(TEST_DATASET)
-    R = []
-    for i in range(0, itr):
-        for p in [False, True]:
-            for i in range(1, len(A) +1):
-                for sampled_attr in [2, 3]:
-                    for j in range(0, 5):
-                        dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=i, prune=p, n_random_attr=sampled_attr)
-                        dt.train(validationData=test_data)
-                        print("cut: {}, sampled_attr: {}, pruned: {}, acc: {}".format(i, sampled_attr, p, dt.test_acc))
-                        R.append([i, sampled_attr, p, dt.test_acc])
-    
-    df = pd.DataFrame(data=np.array(R), columns=["cut", "split_attr", "pruned", "accuracy"])
-    df = df.astype({"cut": int, "split_attr": int})
-    df.to_csv("resultsTree2.csv", index=False)
-
-if __name__ == "__main__":
-    tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
     # T, a, test_data = DataParser.read_data(TEST_DATASET)
     L = len(data)
     l =  int(0.25 * L)
@@ -331,10 +313,37 @@ if __name__ == "__main__":
     mask[idxs] = False
     test_data = data[mask, :]
     training_data = data[~mask, :]
+
+    R = []
+    for i in range(0, itr):
+        for p in [False, True]:
+            for i in range(1, len(A) +1):
+                for sampled_attr in [2, 3]:
+                    for j in range(0, 5):
+                        dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=i, prune=p, n_random_attr=sampled_attr)
+                        dt.train(validationData=test_data)
+                        print("cut: {}, sampled_attr: {}, pruned: {}, acc: {}".format(i, sampled_attr, p, dt.test_acc))
+                        R.append([i, sampled_attr, p, dt.test_acc])
     
-    dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
-    dt.train(validationData=test_data)
-    print("accuracy: {}".format(dt.test_acc))
-    # pred = dt.classify(("high","low","5","4","big","low"))
+    df = pd.DataFrame(data=np.array(R), columns=["cut", "split_attr", "pruned", "accuracy"])
+    df = df.astype({"cut": int, "split_attr": int})
+    df.to_csv("resultsTree5.csv", index=False)
+
+if __name__ == "__main__":
+   # tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
+   # T, a, test_data = DataParser.read_data(TEST_DATASET)
+   # L = len(data)
+   # l =  int(0.25 * L)
+   # mask = np.ones(data.shape[0],dtype=bool)
+   # idxs = np.random.choice(L, l, replace=False)
+   # mask[idxs] = False
+   # test_data = data[mask, :]
+   # training_data = data[~mask, :]
+   # n = int(0.10 * L) 
+   # print(n)
+   # dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=1, prune=True)
+   # dt.train(validationData=test_data)
+   # print("accuracy: {}".format(dt.test_acc))
+   # # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
-    #train_loop(1)
+    train_loop(1)
