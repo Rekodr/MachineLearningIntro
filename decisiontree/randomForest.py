@@ -11,6 +11,7 @@ num_cores = multiprocessing.cpu_count()
 
 BASE_DIR = os.path.dirname("..")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "nursery.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
 
@@ -87,10 +88,18 @@ def train_loop(min_ntrees, max_ntrees):
     n = 0
     cut = 1
     targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
-    T, a, test_data = DataParser.read_data(TEST_DATASET)
+    # T, a, test_data = DataParser.read_data(TEST_DATASET)
+
+    L = len(data)
+    l =  int(0.25 * L)
+    mask = np.ones(data.shape[0],dtype=bool)
+    idxs = np.random.choice(L, l, replace=False)
+    mask[idxs] = False
+    test_data = data[mask, :]
+    training_data = data[~mask, :]
 
     R = []
-    r = Parallel(n_jobs=num_cores)(delayed(processConfig)(data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1, 2) )
+    r = Parallel(n_jobs=num_cores)(delayed(processConfig)(training_data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1, 2) )
     for x in r:
         R += x
     

@@ -11,10 +11,8 @@ BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "nursery.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
 
@@ -325,9 +323,17 @@ def train_loop(itr=1):
 
 if __name__ == "__main__":
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
-    T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
-    dt.train(validationData=data)
+    # T, a, test_data = DataParser.read_data(TEST_DATASET)
+    L = len(data)
+    l =  int(0.25 * L)
+    mask = np.ones(data.shape[0],dtype=bool)
+    idxs = np.random.choice(L, l, replace=False)
+    mask[idxs] = False
+    test_data = data[mask, :]
+    training_data = data[~mask, :]
+    
+    dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
+    dt.train(validationData=test_data)
     print("accuracy: {}".format(dt.test_acc))
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
