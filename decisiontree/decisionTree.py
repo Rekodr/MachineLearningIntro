@@ -328,6 +328,6 @@ if __name__ == "__main__":
     # dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
     # dt.train(validationData=test_data)
     # print("accuracy: {}".format(dt.test_acc))
-    train_loop(1)
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
+    train_loop(1)

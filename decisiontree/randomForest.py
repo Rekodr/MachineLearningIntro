@@ -3,7 +3,11 @@ import numpy as np
 import pandas as pd
 import os
 import math
+import multiprocessing
+from joblib import Parallel, delayed
 from decisionTree import DecisionTree, DataParser, attrs, classes
+
+num_cores = multiprocessing.cpu_count()
 
 BASE_DIR = os.path.dirname("..")
 TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
@@ -32,7 +36,7 @@ class RandomForest:
         L = len(self.data)
         l =  int(0.35 * L)
         for i in range(self.n_trees):
-            idxs = np.random.choice(L, l, replace=True)
+            idxs = np.random.choice(L, l, replace=False)
             sample = self.data[idxs, :]
             dt :DecisionTree = DecisionTree(sample, attributes=self.attributes, targets_cls=self.targets 
                 ,min_dataset=self.min_dataset, n_random_attr=n, prune=False)
@@ -95,4 +99,4 @@ def train_loop(min_ntrees, max_ntrees):
 
 
 if __name__ == "__main__":
-    train_loop(1, 100)
+    train_loop(1, 22)
