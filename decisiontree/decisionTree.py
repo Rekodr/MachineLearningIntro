@@ -312,10 +312,11 @@ def train_loop(itr=1):
         for p in [False, True]:
             for i in range(1, len(A) +1):
                 for sampled_attr in [2, 3]:
-                    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=i, prune=p, n_random_attr=sampled_attr)
-                    dt.train(validationData=test_data)
-                    print("cut: {}, sampled_attr: {}, pruned: {}, acc: {}".format(i, sampled_attr, p, dt.test_acc))
-                    R.append([i, sampled_attr, p, dt.test_acc])
+                    for j in range(0, 5):
+                        dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=i, prune=p, n_random_attr=sampled_attr)
+                        dt.train(validationData=test_data)
+                        print("cut: {}, sampled_attr: {}, pruned: {}, acc: {}".format(i, sampled_attr, p, dt.test_acc))
+                        R.append([i, sampled_attr, p, dt.test_acc])
     
     df = pd.DataFrame(data=np.array(R), columns=["cut", "split_attr", "pruned", "accuracy"])
     df = df.astype({"cut": int, "split_attr": int})
