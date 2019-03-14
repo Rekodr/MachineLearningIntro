@@ -9,9 +9,9 @@ from pprint import pprint
 BASE_DIR = os.path.dirname("..")
 MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
@@ -266,9 +266,9 @@ class DecisionTree():
                 self.traverseTreePruneREP(child, mc=currNode["mc"])
 
     def prunneTree(self):
-        print("before pruning: {}".format(dt.test_acc))
+        # print("before pruning: {}".format(self.test_acc))
         self.traverseTreePruneREP(self.root_node)
-        print("after prunning {}".format(dt.test_acc))
+        # print("after prunning {}".format(self.test_acc))
 
     def classify(self, data):
         data = np.array(data)
@@ -290,7 +290,7 @@ class DecisionTree():
         if validationData is not None:
             acc = self.test(validationData)
             self.test_acc = acc
-            print("accuracy: {}".format(acc))
+            # print("adj: {}".format(self.test_acc))
 
         if self.prunne:
             if validationData is None:
@@ -298,17 +298,18 @@ class DecisionTree():
             else:
                 self.validation_data = validationData
                 self.prunneTree()
+                # print("accuracy: {}".format(acc))
         
         if self.save_mdl is True:
             with open(MODEL_FILE, 'w') as f:  
                 json.dump(self.root_node, f, indent=2)
         return self.root_node
 
-
 if __name__ == "__main__":
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=1, prune=True)
-    dt.train(validationData=data)
+    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
+    dt.train(validationData=test_data)
+    print("accuracy: {}".format(dt.test_acc))
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)

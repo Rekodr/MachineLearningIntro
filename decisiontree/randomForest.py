@@ -25,11 +25,17 @@ class RandomForest:
         self.save_mdl = save_mdl
         self.n_trees = n_trees
 
-    def train(self):
+    def train(self, validationData=None):
+        np.random.shuffle(self.data)
+        n = math.sqrt(len(self.attributes))
+        L = len(self.data)
+        l =  int(0.35 * L)
         for i in range(self.n_trees):
-            dt :DecisionTree = DecisionTree(self.data, attributes=self.attributes, targets_cls=self.targets 
-                ,min_dataset=self.min_dataset, n_random_attr=math.sqrt(len(self.attributes)))
-            dt.train()
+            idxs = np.random.choice(L, l, replace=True)
+            sample = self.data[idxs, :]
+            dt :DecisionTree = DecisionTree(sample, attributes=self.attributes, targets_cls=self.targets 
+                ,min_dataset=self.min_dataset, n_random_attr=n, prune=False)
+            dt.train(validationData=validationData)
             self.trees.append(dt)
 
     def classify(self, data):
@@ -65,12 +71,14 @@ def train_loop(min_ntrees, max_ntrees):
     cut = 1
     targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-
+    n = int(len(data) * .30)
+    idxs = np.random.randint( len(test_data), size=n)
+    validationData = test_data[idxs, :]
     for i in range(min_ntrees, max_ntrees + 1):
         for ncut in range(1, len(attributes) + 1):
-            for j in range(0, 10):
+            for j in range(0, 5):
                 rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
-                rf.train()
+                rf.train(validationData=validationData)
                 acc = rf.test(test_data)
                 if acc > max_acc:
                     max_acc = acc
@@ -81,10 +89,4 @@ def train_loop(min_ntrees, max_ntrees):
 
 
 if __name__ == "__main__":
-    targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
-    T, a, test_data = DataParser.read_data(TEST_DATASET)
-    rf = RandomForest(data, attributes, targets, n_trees=13, min_dataset=5)
-    rf.train()
-    rf.test(data)
-    rf.test(test_data)
-    #train_loop(1, 2)
+    train_loop(1, 100)
