@@ -12,7 +12,8 @@ MODEL_FILE = os.path.join(BASE_DIR, "models", "tree.json")
 
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "fishing.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "contact-lenses.data")
-TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+#TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_training.data")
+TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "nursery.data")
 #TRAINING_DATASET = os.path.join(BASE_DIR, "sample_data", "iris.data")
 TEST_DATASET = os.path.join(BASE_DIR, "sample_data","Car", "car_test.data")
 
@@ -320,14 +321,14 @@ def train_loop(itr=1):
     
     df = pd.DataFrame(data=np.array(R), columns=["cut", "split_attr", "pruned", "accuracy"])
     df = df.astype({"cut": int, "split_attr": int})
-    df.to_csv("resultsTree.csv", index=False)
+    df.to_csv("resultsTree2.csv", index=False)
 
 if __name__ == "__main__":
-    # tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
-    # T, a, test_data = DataParser.read_data(TEST_DATASET)
-    # dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
-    # dt.train(validationData=test_data)
-    # print("accuracy: {}".format(dt.test_acc))
+    tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
+    T, a, test_data = DataParser.read_data(TEST_DATASET)
+    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
+    dt.train(validationData=data)
+    print("accuracy: {}".format(dt.test_acc))
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
-    train_loop(1)
+    #train_loop(1)
