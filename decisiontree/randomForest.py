@@ -83,7 +83,7 @@ def train_loop(min_ntrees, max_ntrees):
                 rf.train(validationData=validationData)
                 acc = rf.test(test_data)
                 R.append([i, ncut, acc * 100])
-                print("N: {} cut: {} cut: {}".format(i, ncut ,acc * 100))
+                print("N: {} cut: {} acc: {}".format(i, ncut ,acc * 100))
                 if acc > max_acc:
                     max_acc = acc
                     n = i
