@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import os
 import math
 import json
@@ -290,7 +291,6 @@ class DecisionTree():
         if validationData is not None:
             acc = self.test(validationData)
             self.test_acc = acc
-            # print("adj: {}".format(self.test_acc))
 
         if self.prunne:
             if validationData is None:
@@ -298,18 +298,35 @@ class DecisionTree():
             else:
                 self.validation_data = validationData
                 self.prunneTree()
-                # print("accuracy: {}".format(acc))
         
         if self.save_mdl is True:
             with open(MODEL_FILE, 'w') as f:  
                 json.dump(self.root_node, f, indent=2)
         return self.root_node
 
-if __name__ == "__main__":
+def train_loop(itr=1):
     tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
-    dt.train(validationData=test_data)
-    print("accuracy: {}".format(dt.test_acc))
+    R = []
+    for i in range(0, itr):
+        for p in [False, True]:
+            for i in range(1, len(A) +1):
+                for sampled_attr in [2, 3]:
+                    dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=i, prune=p, n_random_attr=sampled_attr)
+                    dt.train(validationData=test_data)
+                    print("cut: {}, sampled_attr: {}, pruned: {}, acc: {}".format(i, sampled_attr, p, dt.test_acc))
+                    R.append([i, sampled_attr, p, dt.test_acc])
+    
+    df = pd.DataFrame(data=np.array(R), columns=["cut", "split_attr", "pruned", "accuracy"])
+    df = df.astype({"cut": int, "split_attr": int})
+    df.to_csv("resultsTree.csv", index=False)
+
+if __name__ == "__main__":
+    # tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
+    # T, a, test_data = DataParser.read_data(TEST_DATASET)
+    # dt = DecisionTree(data, attributes=A, targets_cls=tgt_cls ,min_dataset=5, prune=True, n_random_attr=2)
+    # dt.train(validationData=test_data)
+    # print("accuracy: {}".format(dt.test_acc))
+    train_loop(1)
     # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
