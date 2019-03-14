@@ -31,12 +31,13 @@ class RandomForest:
         self.n_trees = n_trees
 
     def train(self, validationData=None):
-        np.random.shuffle(self.data)
+        self.trees = []
         n = math.sqrt(len(self.attributes))
         L = len(self.data)
         l =  int(0.35 * L)
         for i in range(self.n_trees):
             idxs = np.random.choice(L, l, replace=False)
+            np.random.shuffle(self.data)
             sample = self.data[idxs, :]
             dt :DecisionTree = DecisionTree(sample, attributes=self.attributes, targets_cls=self.targets 
                 ,min_dataset=self.min_dataset, n_random_attr=n, prune=False)
@@ -69,34 +70,34 @@ class RandomForest:
         return acc
 
 
+def processConfig(data, test_data, attributes, targets, i):
+    R = []
+    for ncut in range(1, len(attributes) + 1):
+        for j in range(0, 6):
+            rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
+            rf.train()
+            acc = rf.test(test_data)
+            R.append([i, ncut, acc * 100])
+            print("N: {} cut: {} acc: {}".format(i, ncut ,acc * 100))
+
+    return R
+
 def train_loop(min_ntrees, max_ntrees):
     max_acc = 0.0
     n = 0
     cut = 1
     targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
     T, a, test_data = DataParser.read_data(TEST_DATASET)
-    n = int(len(data) * .30)
-    idxs = np.random.randint( len(test_data), size=n)
-    validationData = test_data[idxs, :]
 
     R = []
-    for i in range(min_ntrees, max_ntrees + 1, 2):
-        for ncut in range(1, len(attributes) + 1):
-            for j in range(0, 6):
-                rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
-                rf.train(validationData=validationData)
-                acc = rf.test(test_data)
-                R.append([i, ncut, acc * 100])
-                print("N: {} cut: {} acc: {}".format(i, ncut ,acc * 100))
-                if acc > max_acc:
-                    max_acc = acc
-                    n = i
-                    cut = ncut
-    df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
-    df = df.astype({"trees": int, "split_attr": int})
-    df.to_csv("results.csv", index=False)
-    print("Best N: {}, cut: {}, acc: {}".format(n, cut, max_acc))
+    for i in range(min_ntrees, max_ntrees + 1, 1):
+        r = processConfig(data, test_data, attributes, targets, i)
+
+    # df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
+    # df = df.astype({"trees": int, "split_attr": int})
+    # df.to_csv("results.csv", index=False)
+    # print("Best N: {}, cut: {}, acc: {}".format(n, cut, max_acc))
 
 
 if __name__ == "__main__":
-    train_loop(1, 22)
+    train_loop(1, 2)
