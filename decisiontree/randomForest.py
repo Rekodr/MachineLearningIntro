@@ -34,10 +34,10 @@ class RandomForest:
         self.trees = []
         n = math.sqrt(len(self.attributes))
         L = len(self.data)
-        l =  int(0.35 * L)
+        l =  int(0.49 * L)
         for i in range(self.n_trees):
-            idxs = np.random.choice(L, l, replace=False)
             np.random.shuffle(self.data)
+            idxs = np.random.choice(L, l, replace=True)
             sample = self.data[idxs, :]
             dt :DecisionTree = DecisionTree(sample, attributes=self.attributes, targets_cls=self.targets 
                 ,min_dataset=self.min_dataset, n_random_attr=n, prune=False)
@@ -72,9 +72,8 @@ class RandomForest:
 
 def processConfig(data, test_data, attributes, targets, i):
     R = []
-    print(attributes)
-    for ncut in range(1, len(attributes) + 1):
-        for j in range(0, 6):
+    for ncut in range(1, len(attributes) + 8):
+        for j in range(0, 5):
             rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
             rf.train()
             acc = rf.test(test_data)
@@ -91,7 +90,7 @@ def train_loop(min_ntrees, max_ntrees):
     T, a, test_data = DataParser.read_data(TEST_DATASET)
 
     R = []
-    r = Parallel(n_jobs=num_cores)(delayed(processConfig)(data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1) )
+    r = Parallel(n_jobs=num_cores)(delayed(processConfig)(data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1, 2) )
     for x in r:
         R += x
     
@@ -101,4 +100,4 @@ def train_loop(min_ntrees, max_ntrees):
 
 
 if __name__ == "__main__":
-    train_loop(1, 2)
+    train_loop(1, 50)
