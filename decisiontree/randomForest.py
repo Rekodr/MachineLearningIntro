@@ -72,6 +72,7 @@ class RandomForest:
 
 def processConfig(data, test_data, attributes, targets, i):
     R = []
+    print(attributes)
     for ncut in range(1, len(attributes) + 1):
         for j in range(0, 6):
             rf = RandomForest(data, attributes, targets, n_trees=i, min_dataset=ncut)
@@ -90,13 +91,13 @@ def train_loop(min_ntrees, max_ntrees):
     T, a, test_data = DataParser.read_data(TEST_DATASET)
 
     R = []
-    for i in range(min_ntrees, max_ntrees + 1, 1):
-        r = processConfig(data, test_data, attributes, targets, i)
-
-    # df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
-    # df = df.astype({"trees": int, "split_attr": int})
-    # df.to_csv("results.csv", index=False)
-    # print("Best N: {}, cut: {}, acc: {}".format(n, cut, max_acc))
+    r = Parallel(n_jobs=num_cores)(delayed(processConfig)(data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1) )
+    for x in r:
+        R += x
+    
+    df = pd.DataFrame(data=np.array(R), columns=["trees", "split_attr", "accuracy"])
+    df = df.astype({"trees": int, "split_attr": int})
+    df.to_csv("results.csv", index=False)
 
 
 if __name__ == "__main__":
