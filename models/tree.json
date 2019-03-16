@@ -1,65 +1,96 @@
 {
-  "name": "Forecast",
+  "aname": "Forecast",
   "idx": 3,
+  "children": {
+    "Sunny": {
+      "aname": "Wind",
+      "idx": 0,
+      "children": {
+        "Strong": {
+          "aname": null,
+          "idx": null,
+          "children": {},
+          "leaf": "Yes",
+          "mc": null
+        },
+        "Weak": {
+          "aname": "Water",
+          "idx": 0,
+          "children": {
+            "Warm": {
+              "aname": null,
+              "idx": null,
+              "children": {},
+              "leaf": "No",
+              "mc": null
+            },
+            "Moderate": {
+              "aname": null,
+              "idx": null,
+              "children": {},
+              "leaf": "Yes",
+              "mc": null
+            },
+            "Cold": {
+              "aname": null,
+              "idx": null,
+              "children": {},
+              "leaf": "No",
+              "mc": null
+            }
+          },
+          "leaf": null,
+          "mc": "Yes"
+        }
+      },
+      "leaf": null,
+      "mc": "Yes"
+    },
+    "Cloudy": {
+      "aname": null,
+      "idx": null,
+      "children": {},
+      "leaf": "Yes",
+      "mc": null
+    },
+    "Rainy": {
+      "aname": "Air",
+      "idx": 2,
+      "children": {
+        "Warm": {
+          "aname": "Wind",
+          "idx": 0,
+          "children": {
+            "Strong": {
+              "aname": null,
+              "idx": null,
+              "children": {},
+              "leaf": "Yes",
+              "mc": null
+            },
+            "Weak": {
+              "aname": null,
+              "idx": null,
+              "children": {},
+              "leaf": "No",
+              "mc": null
+            }
+          },
+          "leaf": null,
+          "mc": "Yes"
+        },
+        "Cool": {
+          "aname": null,
+          "idx": null,
+          "children": {},
+          "leaf": "No",
+          "mc": null
+        }
+      },
+      "leaf": null,
+      "mc": "No"
+    }
+  },
   "leaf": null,
-  "Sunny": {
-    "name": "Wind",
-    "idx": 0,
-    "leaf": null,
-    "Strong": {
-      "name": null,
-      "idx": null,
-      "leaf": "Yes"
-    },
-    "Weak": {
-      "name": "Water",
-      "idx": 0,
-      "leaf": null,
-      "Warm": {
-        "name": null,
-        "idx": null,
-        "leaf": "No"
-      },
-      "Moderate": {
-        "name": null,
-        "idx": null,
-        "leaf": "Yes"
-      },
-      "Cold": {
-        "name": null,
-        "idx": null,
-        "leaf": "No"
-      }
-    }
-  },
-  "Cloudy": {
-    "name": null,
-    "idx": null,
-    "leaf": "Yes"
-  },
-  "Rainy": {
-    "name": "Air",
-    "idx": 2,
-    "leaf": null,
-    "Warm": {
-      "name": "Wind",
-      "idx": 0,
-      "leaf": null,
-      "Strong": {
-        "name": null,
-        "idx": null,
-        "leaf": "Yes"
-      },
-      "Weak": {
-        "name": null,
-        "idx": null,
-        "leaf": "No"
-      }
-    },
-    "Cool": {
-      "name": null,
-      "idx": null,
-      "leaf": "No"
-    }
-  }
+  "mc": "Yes"
 }

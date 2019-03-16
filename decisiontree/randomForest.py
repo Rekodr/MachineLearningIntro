@@ -85,20 +85,18 @@ def processConfig(data, test_data, attributes, targets, i):
     return R
 
 def train_loop(min_ntrees, max_ntrees):
-    max_acc = 0.0
-    n = 0
-    cut = 1
-    targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
-    # T, a, test_data = DataParser.read_data(TEST_DATASET)
-
-    L = len(data)
-    l =  int(0.25 * L)
+   targets, attributes, data = DataParser.read_data(TRAINING_DATASET)
+   T, a, test_data = DataParser.read_data(TEST_DATASET)
+#    data = np.concatenate((data, test_data))
+   L = len(data)
+   l =  int(0.30 * L)
+   n = int(math.sqrt(len(attributes)))
+   for i in range(0, 20):
     mask = np.ones(data.shape[0],dtype=bool)
     idxs = np.random.choice(L, l, replace=False)
     mask[idxs] = False
-    test_data = data[mask, :]
-    training_data = data[~mask, :]
-
+    training_data = data[mask, :]
+    test_data = data[~mask, :]
     R = []
     r = Parallel(n_jobs=num_cores)(delayed(processConfig)(training_data, test_data, attributes, targets, i) for i in range(min_ntrees, max_ntrees + 1, 2) )
     for x in r:

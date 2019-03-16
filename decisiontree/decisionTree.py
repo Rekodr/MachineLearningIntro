@@ -140,8 +140,8 @@ class DecisionTree():
         for p in value_cnt_per_grp: 
             if p != 0:
                 E += -1 * p * math.log2(p)
-        s = E * attr_cnt/sample_size
-        return s
+        e_prime = E * attr_cnt/sample_size
+        return e_prime
 
     @staticmethod
     def maxGrain(G :gainsList) -> maxgain:
@@ -191,6 +191,7 @@ class DecisionTree():
         if n_random_attr is not None and n_random_attr < len(A):
             idxs = np.random.choice(len(A), size=n_random_attr, replace=False)
 
+        # Computing Information gain for each in attribute
         for idx, attr_name in enumerate(A):
             g = S
             for attr_value in A[attr_name]: #loop throup attr values
@@ -247,23 +248,31 @@ class DecisionTree():
         d = np.delete(data, attr_idx)
         return self.traverseTree(next_node, d, mc=currNode["mc"])     
 
-    def traverseTreePruneREP(self, currNode: node, mc :str=None):
+    def traverseTreePruneREP(self, currNode: node):
         """
         Reduced error pruning
         """
         leaf = currNode["leaf"]
-        if leaf is not None:
-            currNode["leaf"] = None
+        attr = currNode["aname"]
+        m = currNode["mc"]
+        children = currNode.pop("children")
+        currNode["children"] = {}
+        if attr is not None :
+            currNode["leaf"] = m
+            currNode["aname"] = None
             acc = self.test(self.validation_data)
             if acc < self.test_acc:
                 currNode["leaf"] = leaf
+                currNode["aname"] = attr
+                currNode["children"] = children
             else:
                 self.test_acc = acc
-        else:
+
+        if currNode["aname"] is not None:
             children = currNode["children"]
             for key in children:
                 child = children[key]
-                self.traverseTreePruneREP(child, mc=currNode["mc"])
+                self.traverseTreePruneREP(child)
 
     def prunneTree(self):
         print("before pruning: {}".format(self.test_acc))
@@ -330,20 +339,21 @@ def train_loop(itr=1):
     df.to_csv("resultsTree5.csv", index=False)
 
 if __name__ == "__main__":
-   # tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
-   # T, a, test_data = DataParser.read_data(TEST_DATASET)
-   # L = len(data)
-   # l =  int(0.25 * L)
-   # mask = np.ones(data.shape[0],dtype=bool)
-   # idxs = np.random.choice(L, l, replace=False)
-   # mask[idxs] = False
-   # test_data = data[mask, :]
-   # training_data = data[~mask, :]
-   # n = int(0.10 * L) 
-   # print(n)
-   # dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=1, prune=True)
-   # dt.train(validationData=test_data)
-   # print("accuracy: {}".format(dt.test_acc))
+   tgt_cls, A, data = DataParser.read_data(TRAINING_DATASET)
+   T, a, test_data = DataParser.read_data(TEST_DATASET)
+#    data = np.concatenate((data, test_data))
+   L = len(data)
+   l =  int(0.30 * L)
+   n = int(math.sqrt(len(A)))
+   for i in range(0, 20):
+    mask = np.ones(data.shape[0],dtype=bool)
+    idxs = np.random.choice(L, l, replace=False)
+    mask[idxs] = False
+    training_data = data[mask, :]
+    test_data = data[~mask, :]
+    dt = DecisionTree(training_data, attributes=A, targets_cls=tgt_cls ,min_dataset=1, prune=False, save_mdl=False, n_random_attr=n - 1)
+    dt.train(validationData=test_data)
+    print("{}".format(dt.test_acc))
    # # pred = dt.classify(("high","low","5","4","big","low"))
     # print(pred)
-    train_loop(1)
+   # train_loop(1)
