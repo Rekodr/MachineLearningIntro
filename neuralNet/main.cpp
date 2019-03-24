@@ -1,6 +1,7 @@
+#include <iostream>
 
 using namespace std;
 int main(int argc, char* argv[]) {
-    println("Hello workd");
+    cout << "Hellp wolrd" << endl;
     return 1;
 }
