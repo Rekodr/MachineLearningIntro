@@ -12,4 +12,4 @@ $(TARGET): $(OBJ)
 .PHONY: clean
 
 clean:
-	rm *.o $(Name)
+	rm *.o $(TARGET)
