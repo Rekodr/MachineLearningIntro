@@ -11,7 +11,7 @@ private:
     shared_ptr<double> weights;
     shared_ptr<double> biases;
 public:
-    NeuralNet(int layers=1);
+    NeuralNet(int layers=2);
     ~NeuralNet();
     int getnLayers() { return this -> nHiddedlayers;};
 };
