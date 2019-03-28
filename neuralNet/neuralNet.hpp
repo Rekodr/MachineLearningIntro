@@ -8,17 +8,17 @@ using namespace std;
 
 class NeuralNet {
 private:
-    int nHiddedlayers;
-    shared_ptr<double> inputs;
-    shared_ptr<double> hlayers;
-    shared_ptr<double> output;
-    shared_ptr<double> weights;
-    shared_ptr<double> biases;
-    vector<int> shape;
+    int nLayers;
+    double** hlayers;
+    double*** weights;
+    double* biases;
+    vector<int> network;
 public:
-    NeuralNet(vector<double> data, vector<int>& shape, int nLayers=1);
+    NeuralNet(vector<double> data, vector<int>& network);
     ~NeuralNet();
-    void init(vector<double>& data);
-    int getnLayers() { return this -> nHiddedlayers;};
+    void init();
+    void init_weight(double** w, int& dim);
+    void init_neurons(double* neurons, int& dim);
+    int getnLayers() { return this->nLayers;};
 };
 #endif
