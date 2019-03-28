@@ -14,38 +14,36 @@ NeuralNet::NeuralNet(vector<double> data, vector<int>& network) {
 
 NeuralNet::~NeuralNet() {
     for(auto i = 0; i < this->nLayers; i++) {
-        delete this->hlayers[i];
+        delete this->layersInput[i];
     }
 
-    cout << sizeof(this->weights) << endl;
     for(auto i = 0; i < this->nLayers - 1; i++) {
         delete this->weights[i];
     }
-    
-    delete this->hlayers;
+
+    delete this->layersInput;
     delete this->biases;
     delete this->weights;
 }
 
 void NeuralNet::init() {
-    this->hlayers = new double*[this->nLayers];
+    this->layersInput = new double*[this->nLayers];
     this->biases = new double[this->nLayers - 1]; 
     this->weights = new double*[this->nLayers - 1];
 
     this->initBiases(this->biases);
     
     for(auto i = 0; i < this->nLayers; i++) {
-        int layerDim = this->network.at(i);
-        this->hlayers[i] = new double[layerDim];
-        this->initNeurons(this->hlayers[i], layerDim);
+        int layerDim = this->network.at(i) ;
+        this->layersInput[i] = new double[layerDim];
+        this->initNeurons(this->layersInput[i], layerDim);
         if(i > 0) {
-            int prevLayerDim = this->network.at(i-1);
+            int prevLayerDim = this->network.at(i-1) + 1; // add one for the bias weight
             int wDim = prevLayerDim * layerDim;
             this->weights[i-1] = new double[wDim];
             this->initWeight(this->weights[i-1], wDim);
         }
     }
-    cout << "Hello" << endl;
 }
 
 void NeuralNet::initBiases(double *b) {
@@ -63,5 +61,41 @@ void NeuralNet::initNeurons(double* neurons, int& dim) {
 void NeuralNet::initWeight(double* w, int& dim) {
     for(auto i = 0; i < dim; i++) {
         w[i] = 0.0; // need to randomize
+    }
+}
+
+void NeuralNet::showW() {
+    cout << "W" << endl;
+    for(auto i = 0; i < this->nLayers - 1; i++) {
+        int layerDim = this->network.at(i+1);
+        cout << "L:" << i + 2 << endl; 
+        cout << "  ";
+        int prevLayerDim = this->network.at(i) + 1;
+        for(auto j = 0; j < layerDim; j++) {
+            for(auto m = 0; m < prevLayerDim; m++) {
+                double v = this->weights[i][prevLayerDim * j + m];
+                cout << v << " ";
+            }
+            cout << endl; 
+        }
+    }
+}
+
+void NeuralNet::showB() {
+    cout << "B" << endl;
+    for(auto i = 0; i < this->nLayers -1; i++) {
+        cout << "  " << this->biases[i] << endl;
+    }
+}
+
+void NeuralNet::showN() {
+    cout << "X" << endl;
+    for(auto i = 0; i < this->nLayers; i++) {
+        cout << "L:" << i + 1 << endl;
+        cout << "  ";
+        for(auto n = 0; n < this->network.at(i); n++) {
+            cout << this->layersInput[i][n] << " ";
+        }
+        cout << endl;
     }
 }

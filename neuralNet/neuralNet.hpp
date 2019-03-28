@@ -9,7 +9,7 @@ using namespace std;
 class NeuralNet {
 private:
     int nLayers;
-    double** hlayers;
+    double** layersInput;
     double** weights;
     double* biases;
     vector<int> network;
@@ -21,5 +21,9 @@ public:
     void initNeurons(double* neurons, int& dim);
     void initBiases(double* b);
     int getnLayers() { return this->nLayers;};
+
+    void showW();
+    void showN();
+    void showB();
 };
 #endif
