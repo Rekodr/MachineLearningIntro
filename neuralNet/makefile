@@ -4,7 +4,7 @@ DEPS = neuralNet.hpp
 OBJ = main.o neuralNet.o
 
 %.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $<
+	$(CC) -std=c++17 -c -o $@ $<
 
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $^
