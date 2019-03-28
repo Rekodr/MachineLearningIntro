@@ -8,10 +8,13 @@ int main(int argc, char* argv[]) {
     vector<int> shape{2, 2, 1};
     NeuralNet net = NeuralNet(data, shape);
     cout << net.getnLayers() << endl << endl;
+    cout << "W" << endl;
     net.showW();
     cout << endl;
+    cout << "B" << endl;
     net.showB();
     cout << endl;
+    cout << "X" << endl;
     net.showN();
     return 1;
 }
