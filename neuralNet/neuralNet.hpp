@@ -10,15 +10,16 @@ class NeuralNet {
 private:
     int nLayers;
     double** hlayers;
-    double*** weights;
+    double** weights;
     double* biases;
     vector<int> network;
 public:
     NeuralNet(vector<double> data, vector<int>& network);
     ~NeuralNet();
     void init();
-    void init_weight(double** w, int& dim);
-    void init_neurons(double* neurons, int& dim);
+    void initWeight(double* w, int& dim);
+    void initNeurons(double* neurons, int& dim);
+    void initBiases(double* b);
     int getnLayers() { return this->nLayers;};
 };
 #endif
