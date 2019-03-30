@@ -28,6 +28,7 @@ public:
     void train();
     void feedForward(double* input);
     void forward();
+    void backpropage();
     double* yCpu(double* X, double* W, double b, const int nrow, const int ncol);
 
 

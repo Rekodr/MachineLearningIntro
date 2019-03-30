@@ -132,11 +132,17 @@ void NeuralNet::feedForward(double* input) {
     for(auto i = this->layerPos; i < this->nLayers; i++) {
         this->forward();
     }
+
+    int nOut = this->network.back();
+    for(auto i = 0; i < nOut; i++) {
+        cout << this->layersInput[this->nLayers - 1][i] << endl;
+    }
 }
 
 double NeuralNet::sigmoid(double& val) {
     return 1.0/(1 + exp(-val));
 }
+
 double* NeuralNet::yCpu(double* X, double* W, double b,const int nrows, const int ncols) {
     const int a = 1;
     vector<double> y = {};
