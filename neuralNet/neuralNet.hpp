@@ -25,14 +25,15 @@ public:
     void initBiases(double* b);
     int getnLayers() { return this->nLayers;};
     
-    double* yCpu(double* X, double* W, double b, const int nrow, const int ncol);
     void train();
-    void forward();
     void feedForward(double* input);
+    void forward();
+    double* yCpu(double* X, double* W, double b, const int nrow, const int ncol);
 
 
     double sigmoid(double& val);
-
+    double error(double* t, double* y);
+    
     void sumCpu();
     void setBiases(double b[], const int n);
     void setWeights(double* w[]);

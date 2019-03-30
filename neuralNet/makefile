@@ -1,4 +1,4 @@
-TARGET=neuralNet
+TARGET=NN
 CC=g++
 DEPS = neuralNet.hpp
 OBJ = main.o neuralNet.o

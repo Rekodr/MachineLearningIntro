@@ -119,3 +119,6 @@ dmypy.json
 
 # c/c++
 *.o
+
+#outputs
+*NN
