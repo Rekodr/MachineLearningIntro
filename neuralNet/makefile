@@ -2,7 +2,7 @@ TARGET=NN
 CC=g++
 DEPS = neuralNet.hpp
 OBJ = main.o neuralNet.o
-CFLAGS = -g
+CFLAGS = -g3
 
 %.o: %.cpp $(DEPS)
 	$(CC) -std=c++17 -c -o $@ $< $(CFLAGS)
