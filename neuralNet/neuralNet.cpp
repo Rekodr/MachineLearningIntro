@@ -20,31 +20,31 @@ NeuralNet::~NeuralNet() {
     }
 
     for(auto i = 0; i < this->nLayers - 1; i++) {
-        delete this->weights[i];
+        delete this->layersWeights[i];
     }
 
     delete this->layersInput;
-    delete this->biases;
-    delete this->weights;
+    delete this->layersWeights;
 }
 
 void NeuralNet::init() {
     this->layerPos = 1;
-    this->layersInput = new double*[this->nLayers];
-    this->weights = new double*[this->nLayers - 1];
+    this->layersInput = new Layer[this->nLayers];
+    this->layersWeights = new Layer[this->nLayers - 1];
 
     for(auto i = 0; i < this->nLayers; i++) {
         int layerDim = this->network.at(i);
+        
         if(i < this->nLayers - 1) ++layerDim;  // add 1 neuron for bias node; expect for output layer
 
         this->layersInput[i] = new double[layerDim];
         this->initNeurons(this->layersInput[i], layerDim);
-        
-        if(i > 0) {
+
+        if(i > 0) {  // each layer have  a weight for each input
             int prevLayerDim = this->network.at(i-1) + 1; // add one for the bias weight
-            int numWeights = prevLayerDim * layerDim;
-            this->weights[i-1] = new double[numWeights];
-            this->initWeight(this->weights[i-1], numWeights);
+            int numWeights = prevLayerDim * layerDim;  
+            this->layersWeights[i-1] = new double[numWeights]; // express 2D as 1D here.
+            this->initWeight(this->layersWeights[i-1], numWeights);
         }
     }
     
@@ -81,7 +81,7 @@ void NeuralNet::setWeights(double** w) {
     for(auto i = 0; i < this->nLayers - 1; i++) {
         int layerDim = this->network.at(i+1);
         int prevLayerDim = this->network.at(i) + 1;
-        memcpy(this->weights[i], w[i], sizeof(double) * layerDim * prevLayerDim);
+        memcpy(this->layersWeights[i], w[i], sizeof(double) * layerDim * prevLayerDim);
     }
 }
 
@@ -93,7 +93,7 @@ void NeuralNet::showW() {
         for(auto j = 0; j < layerDim; j++) {
             cout << "  ";
             for(auto m = 0; m < prevLayerDim; m++) {
-                double v = this->weights[i][prevLayerDim * j + m];
+                double v = this->layersWeights[i][prevLayerDim * j + m];
                 cout << v << " ";
             }
             cout << endl; 
@@ -118,23 +118,17 @@ void NeuralNet::showN() {
     }
 }
 
-void NeuralNet::forward() {
-    int pos = this->layerPos++;
-    int nrows = this->network.at(pos);
-    int ncols = this->network.at(pos - 1) + 1; // add one for the bias neuron
-
-    double* v = this->dotProduct(this->layersInput[pos - 1], this->weights[pos - 1], nrows, ncols);
-    memcpy(this->layersInput[pos], v, sizeof(double) * nrows);
-}
-
 void NeuralNet::train() {
 
 }
 
-void NeuralNet::feedForward(double* input) {
-    int input_shape = this->network.at(0);
-    memcpy(this->layersInput[0], input, sizeof(double) * input_shape);
+void NeuralNet::feedForward(double* data) {
+    int numNeurons = this->network.at(0);
+    Layer inputLayer = this->layersInput[0];
+    memcpy(inputLayer, data, sizeof(double) * numNeurons);
+
     this->layerPos = 1;
+
     for(auto i = this->layerPos; i < this->nLayers; i++) {
         this->forward();
     }
@@ -145,8 +139,18 @@ void NeuralNet::feedForward(double* input) {
     }
 }
 
-double NeuralNet::sigmoid(double& val) {
-    return 1.0/(1 + exp(-val));
+void NeuralNet::forward() {
+    int pos = this->layerPos;
+    int nrows = this->network.at(pos);
+    int ncols = this->network.at(pos - 1) + 1; // add one for the bias neuron
+
+    Layer X = this->layersInput[pos - 1];  // get previous layer
+    Layer Y = this->layersInput[pos];   // get current layer
+    Layer W = this->layersWeights[pos - 1]; // -1 remember that layer 1 don't have Ws on its input
+    
+    Layer y = this->dotProduct(X, W, nrows, ncols); // Y = W * X  + b
+    memcpy(Y, y, sizeof(double) * nrows);  // update curr layer outputs
+    ++this->layerPos;
 }
 
 double* NeuralNet::dotProduct(double* X, double* W, const int nrows, const int ncols) {
@@ -164,4 +168,8 @@ double* NeuralNet::dotProduct(double* X, double* W, const int nrows, const int n
     }
 
     return y.data();
+}
+
+double NeuralNet::sigmoid(double& val) {
+    return 1.0/(1 + exp(-val));
 }

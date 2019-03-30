@@ -5,14 +5,16 @@
 #include <vector>
 
 using namespace std;
+typedef double** Layers;
+typedef double* Layer;
+
 
 class NeuralNet {
 private:
     int nLayers;
     int layerPos;
-    double** layersInput;
-    double** weights;
-    double* biases;
+    Layers layersInput;
+    Layers layersWeights;
     vector<int> network;
     vector<vector<double>> data;
 
