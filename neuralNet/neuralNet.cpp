@@ -31,27 +31,30 @@ NeuralNet::~NeuralNet() {
 void NeuralNet::init() {
     this->layerPos = 1;
     this->layersInput = new double*[this->nLayers];
-    this->biases = new double[this->nLayers - 1]; 
     this->weights = new double*[this->nLayers - 1];
 
-    this->initBiases(this->biases);
-    
     for(auto i = 0; i < this->nLayers; i++) {
-        int layerDim = this->network.at(i) ;
+        int layerDim = this->network.at(i);
+        if(i < this->nLayers - 1) ++layerDim;  // add 1 neuron for bias node; expect for output layer
+
         this->layersInput[i] = new double[layerDim];
         this->initNeurons(this->layersInput[i], layerDim);
+        
         if(i > 0) {
             int prevLayerDim = this->network.at(i-1) + 1; // add one for the bias weight
-            int wDim = prevLayerDim * layerDim;
-            this->weights[i-1] = new double[wDim];
-            this->initWeight(this->weights[i-1], wDim);
+            int numWeights = prevLayerDim * layerDim;
+            this->weights[i-1] = new double[numWeights];
+            this->initWeight(this->weights[i-1], numWeights);
         }
     }
+    
+    this->initBiases();
 }
 
-void NeuralNet::initBiases(double *b) {
+void NeuralNet::initBiases() {
     for(auto i = 0; i < (this->nLayers - 1); i++) {
-        b[i] = 0.0; // need to randomize
+        int layerDim = this->network.at(i) + 1; // add one for the bias
+        this->layersInput[i][layerDim -1] = 1.0; // need to make it random
     }
 }
 
@@ -68,7 +71,10 @@ void NeuralNet::initWeight(double* w, int& dim) {
 }
 
 void NeuralNet::setBiases(double b[], const int n) {
-    memcpy(this->biases, b, sizeof(double) * (this->nLayers - 1));
+    for(auto i = 0; i < this->nLayers - 1; i++) {
+        int layerDim = this->network.at(i) + 1; // add one for the bias
+        this->layersInput[i][layerDim -1] = b[0];
+    }
 }
 
 void NeuralNet::setWeights(double** w) {
@@ -95,19 +101,19 @@ void NeuralNet::showW() {
     }
 }
 
-void NeuralNet::showB() {
-    for(auto i = 0; i < this->nLayers -1; i++) {
-        cout << "  " << this->biases[i] << endl;
-    }
-}
-
 void NeuralNet::showN() {
     for(auto i = 0; i < this->nLayers; i++) {
         cout << "L:" << i + 1 << endl;
         cout << "  ";
-        for(auto n = 0; n < this->network.at(i); n++) {
-            cout << this->layersInput[i][n] << " ";
-        }
+        if(i == this->nLayers -1)  // output layer
+            for(auto n = 0; n < this->network.at(i); n++) {
+                cout << this->layersInput[i][n] << " ";
+            }
+        else
+            // loop through all neuron + the bias neuron
+            for(auto n = 0; n < this->network.at(i) + 1; n++) {
+                cout << this->layersInput[i][n] << " ";
+            }            
         cout << endl;
     }
 }
@@ -116,8 +122,8 @@ void NeuralNet::forward() {
     int pos = this->layerPos++;
     int nrows = this->network.at(pos);
     int ncols = this->network.at(pos - 1) + 1; // add one for the bias neuron
-    double b = this->biases[pos - 1];
-    double* v = this->yCpu(this->layersInput[pos - 1], this->weights[pos - 1], b, nrows, ncols);
+
+    double* v = this->dotProduct(this->layersInput[pos - 1], this->weights[pos - 1], nrows, ncols);
     memcpy(this->layersInput[pos], v, sizeof(double) * nrows);
 }
 
@@ -143,21 +149,17 @@ double NeuralNet::sigmoid(double& val) {
     return 1.0/(1 + exp(-val));
 }
 
-double* NeuralNet::yCpu(double* X, double* W, double b,const int nrows, const int ncols) {
+double* NeuralNet::dotProduct(double* X, double* W, const int nrows, const int ncols) {
     const int a = 1;
     vector<double> y = {};
     for(auto i = 0; i < nrows; i++) {
         double prod = 0.0;
         for(auto j = 0; j < ncols; j++) {
-            double val = 0.0;
-            if(j < ncols - 1) {
-                val = X[j]; 
-            } else {
-                val = b; 
-            }
-            double wi = W[ncols * i + j];
-            prod += val * wi;
+            double x = X[j];
+            double w_ij = W[ncols * i + j];
+            prod += x * w_ij;
         }
+
         y.push_back(this->sigmoid(prod));
     }
 

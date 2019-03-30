@@ -22,14 +22,14 @@ public:
     void init();
     void initWeight(double* w, int& dim);
     void initNeurons(double* neurons, int& dim);
-    void initBiases(double* b);
+    void initBiases();
     int getnLayers() { return this->nLayers;};
     
     void train();
     void feedForward(double* input);
     void forward();
     void backpropage();
-    double* yCpu(double* X, double* W, double b, const int nrow, const int ncol);
+    double* dotProduct(double* X, double* W, const int nrow, const int ncol);
 
 
     double sigmoid(double& val);
@@ -40,6 +40,5 @@ public:
     void setWeights(double* w[]);
     void showW();
     void showN();
-    void showB();
 };
 #endif

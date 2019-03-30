@@ -30,8 +30,6 @@ int main(int argc, char* argv[]) {
     cout << "W" << endl;
     net.showW();
     cout << endl;
-    cout << "B" << endl;
-    net.showB();
     cout << endl;
     cout << "X" << endl;
     net.showN();
