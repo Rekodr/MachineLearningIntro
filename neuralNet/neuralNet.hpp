@@ -11,34 +11,39 @@ typedef double* Layer;
 
 class NeuralNet {
 private:
-    int nLayers;
-    int layerPos;
+    unsigned nLayers;
+    unsigned layerPos;
     Layers layersInput;
     Layers layersWeights;
-    vector<int> network;
+    Layers layersError;
+    vector<unsigned> network;
     vector<vector<double>> data;
+    vector<vector<double>> targets;
 
 public:
-    NeuralNet(vector<vector<double>>& data, vector<int>& network);
+    NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network);
     ~NeuralNet();
     void init();
-    void initWeight(double* w, int& dim);
-    void initNeurons(double* neurons, int& dim);
+    void initWeight(double* w, unsigned& dim);
+    void initNeurons(double* neurons, unsigned& dim);
     void initBiases();
-    int getnLayers() { return this->nLayers;};
+    unsigned getnLayers() { return this->nLayers;};
     
     void train();
     void feedForward(double* input);
     void forward();
+    void backpropagation();
     void backpropage();
-    double* dotProduct(double* X, double* W, const int nrow, const int ncol);
+    
+    Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol);
 
 
     double sigmoid(double& val);
-    double error(double* t, double* y);
+    double totalError(double* target);
+    double layerError();
     
     void sumCpu();
-    void setBiases(double b[], const int n);
+    void setBiases(double b[], const unsigned n);
     void setWeights(double* w[]);
     void showW();
     void showN();

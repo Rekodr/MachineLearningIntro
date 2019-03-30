@@ -4,9 +4,10 @@
 
 using namespace std;
 int main(int argc, char* argv[]) {
-    vector<int> shape{2, 2, 1};
+    vector<unsigned> shape{2, 2, 1};
 
     vector<vector<double>> data = {{0, 1}};
+    vector<vector<double>> targets = {{1}};
     double b[] = {1, 1} ;
 
     double tmp[2][2][3] = {
@@ -22,7 +23,7 @@ int main(int argc, char* argv[]) {
         memcpy(w[i], tmp[i], sizeof(double) * curr * prev);
     }
 
-    NeuralNet net = NeuralNet(data, shape);
+    NeuralNet net = NeuralNet(data, targets, shape);
     net.setBiases(b, 2);
     net.setWeights((double**)w);
 
