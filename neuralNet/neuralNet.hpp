@@ -35,14 +35,12 @@ public:
     void backpropagation();
     void backpropage();
     
-    Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol);
+    Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol, bool transfer=false);
 
 
     double sigmoid(double& val);
     double totalError(double* target);
-    double layerError();
-    
-    void sumCpu();
+    void layerError(unsigned layerIndex, double* target=nullptr);
     void setBiases(double b[], const unsigned n);
     void setWeights(double* w[]);
     void showW();
