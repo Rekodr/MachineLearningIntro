@@ -3,11 +3,13 @@
 #include <cmath>
 
 using namespace std;
-NeuralNet::NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network) {
+NeuralNet::NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network, double learningRate) {
     if(network.size() < 3) {
         throw "In valid shape.";
     }
     this->sampleInputIdx = -1;
+    this->learningRate = learningRate;
+
     this->data = input;
     this->targets = targets;
     this->network.assign(network.begin(), network.end()); 
@@ -214,7 +216,7 @@ void NeuralNet::learn() {
             for(auto m = 0; m < prevLayerDim; m++) {
                 double a = this->layersInput[i][m];
                 double w  = this->layersWeights[i][prevLayerDim * j + m];
-                this->layersWeights[i][prevLayerDim * j + m] = w + (0.5) * grad * a;
+                this->layersWeights[i][prevLayerDim * j + m] = w + (this->learningRate) * grad * a;
             }
         }
     }

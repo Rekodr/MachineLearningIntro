@@ -14,6 +14,7 @@ private:
     unsigned nLayers;
     unsigned layerPos;
     unsigned sampleInputIdx;
+    double learningRate;
     Layers layersInput;
     Layers layersWeights;
     Layers layersError;
@@ -22,7 +23,7 @@ private:
     vector<vector<double>> targets;
 
 public:
-    NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network);
+    NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network, double learningRate=0.5);
     ~NeuralNet();
     void init();
     void initWeight(double* w, unsigned& dim);
