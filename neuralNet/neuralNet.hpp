@@ -13,6 +13,7 @@ class NeuralNet {
 private:
     unsigned nLayers;
     unsigned layerPos;
+    unsigned sampleInputIdx;
     Layers layersInput;
     Layers layersWeights;
     Layers layersError;
@@ -30,17 +31,19 @@ public:
     unsigned getnLayers() { return this->nLayers;};
     
     void train();
-    void feedForward(double* input);
+    double feedForward();
     void forward();
-    void backpropagation();
-    void backpropage();
+    void backPropagation();
+    void backPropageError(unsigned layerIndex, double* target=nullptr);
+    void learn();
     
     Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol, bool transfer=false);
-
+    void fetchInput();
+    
 
     double sigmoid(double& val);
     double totalError(double* target);
-    void layerError(unsigned layerIndex, double* target=nullptr);
+    
     void setBiases(double b[], const unsigned n);
     void setWeights(double* w[]);
     void showW();

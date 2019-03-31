@@ -27,16 +27,12 @@ int main(int argc, char* argv[]) {
     net.setBiases(b, 2);
     net.setWeights((double**)w);
 
-    cout << net.getnLayers() << endl << endl;
     cout << "W" << endl;
     net.showW();
     cout << endl;
-    cout << endl;
-    cout << "X" << endl;
-    net.showN();
 
-    vector<double> x = data.at(0);
-    net.feedForward(x.data());
+    net.train();
+    net.showW();
 
     return 1;
 }

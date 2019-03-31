@@ -7,7 +7,7 @@ NeuralNet::NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targ
     if(network.size() < 3) {
         throw "In valid shape.";
     }
-
+    this->sampleInputIdx = -1;
     this->data = input;
     this->targets = targets;
     this->network.assign(network.begin(), network.end()); 
@@ -124,30 +124,26 @@ void NeuralNet::showN() {
 }
 
 void NeuralNet::train() {
-
+    this->fetchInput();
+    double err = this->feedForward();
+    cout << "error: " << err << endl; 
+    this->backPropagation();
+    this->learn();
 }
 
-void NeuralNet::feedForward(double* data) {
+double NeuralNet::feedForward() {
+    Layer input = this->data.at(this->sampleInputIdx).data();
+    Layer targetOutput = this->targets.at(this->sampleInputIdx).data();
     unsigned numNeurons = this->network.at(0);
     Layer inputLayer = this->layersInput[0];
-    memcpy(inputLayer, data, sizeof(double) * numNeurons);
+    memcpy(inputLayer, input, sizeof(double) * numNeurons);
 
     this->layerPos = 1;
-
     for(auto i = this->layerPos; i < this->nLayers; i++) {
         this->forward();
     }
-
-    unsigned nOut = this->network.back();
-    for(auto i = 0; i < nOut; i++) {
-        cout << this->layersInput[this->nLayers - 1][i] << endl;
-    }
-    double E = this->totalError(this->targets[0].data());
-    cout << "E: " << E << endl;
-
-
-    this->layerError(this->nLayers-1, this->targets[0].data());
-    this->layerError(this->nLayers - 2);
+    double E = this->totalError(targetOutput);
+    return E;
 }
 
 void NeuralNet::forward() {
@@ -162,6 +158,66 @@ void NeuralNet::forward() {
     Layer y = this->dotProduct(X, W, nrows, ncols, true); // Y = W * X  + b
     memcpy(Y, y, sizeof(double) * nrows);  // update curr layer outputs
     ++this->layerPos;
+}
+
+void NeuralNet::backPropagation() {
+    // out layer error
+    unsigned sampleInputIdx = this->sampleInputIdx;
+    this->backPropageError(this->nLayers-1, this->targets[sampleInputIdx].data());
+    for(auto layerIndex = this->nLayers - 2; layerIndex > 0; layerIndex--) {
+        this->backPropageError(layerIndex);
+    }
+}
+
+void NeuralNet::backPropageError(unsigned layerIndex, double* target) {
+    Layer layerActivations = this->layersInput[layerIndex];
+    Layer layerErrors = this->layersError[layerIndex];
+
+    unsigned layerDim = this->network.at(layerIndex);
+    if(layerIndex == this->nLayers - 1) {
+        if(target == nullptr) {
+            throw "Error: null target";
+        }
+        for(auto i = 0; i < layerDim; i++) {
+            double a = layerActivations[i];
+            layerErrors[i] = a * (1 - a) * (target[i] - a);
+            // for(auto i = 0; i < layerDim; i++) {
+            //     cout << layerErrors[i] << "  ";
+            // }
+            // cout << endl;
+        }
+    } else {
+        Layer preLayer = this->layersError[layerIndex + 1];
+        Layer W = this->layersWeights[layerIndex];
+        unsigned nrows = layerDim;
+        unsigned ncols = this->network.at(layerIndex + 1);
+        Layer e = this->dotProduct(preLayer, W, nrows, ncols);
+
+        for(auto i = 0; i < layerDim; i++) {  // take into accout the activation derivative
+            double a = layerActivations[i];
+            layerErrors[i] = (a * (1 - a)) * e[i];
+        }
+
+        // for(auto i = 0; i < nrows; i++) {
+        //     cout << layerErrors[i] << "  ";
+        // }
+        // cout << endl;
+    }
+}
+
+void NeuralNet::learn() {
+    for(auto i = 0; i < this->nLayers - 1; i++) {
+        unsigned layerDim = this->network.at(i+1);
+        unsigned prevLayerDim = this->network.at(i) + 1;
+        for(auto j = 0; j < layerDim; j++) {
+            double grad = this->layersError[i+1][j];
+            for(auto m = 0; m < prevLayerDim; m++) {
+                double a = this->layersInput[i][m];
+                double w  = this->layersWeights[i][prevLayerDim * j + m];
+                this->layersWeights[i][prevLayerDim * j + m] = w + (0.5) * grad * a;
+            }
+        }
+    }
 }
 
 double* NeuralNet::dotProduct(double* X, double* W, const unsigned nrows, const unsigned ncols, bool tranfer) {
@@ -195,45 +251,6 @@ double NeuralNet::totalError(double* target) {
     return error;
 }
 
-void NeuralNet::layerError(unsigned layerIndex, double* target) {
-    Layer layerActivations = this->layersInput[layerIndex];
-    Layer layerErrors = this->layersError[layerIndex];
 
-    unsigned layerDim = this->network.at(layerIndex);
-    if(layerIndex == this->nLayers - 1) {
-        if(target == nullptr) {
-            throw "Error: null target";
-        }
-        for(auto i = 0; i < layerDim; i++) {
-            double a = layerActivations[i];
-            layerErrors[i] = a * (1 - a) * (target[i] - a);
-            for(auto i = 0; i < layerDim; i++) {
-                cout << layerErrors[i] << "  ";
-            }
-            cout << endl;
-        }
-    } else {
-        Layer preLayer = this->layersError[layerIndex + 1];
-        Layer W = this->layersWeights[layerIndex];
-        unsigned nrows = layerDim;
-        unsigned ncols = this->network.at(layerIndex + 1);
-        Layer e = this->dotProduct(preLayer, W, nrows, ncols);
-
-        for(auto i = 0; i < layerDim; i++) {  // take into accout the activation derivative
-            double a = layerActivations[i];
-            layerErrors[i] = (a * (1 - a)) * e[i];
-        }
-
-        for(auto i = 0; i < nrows; i++) {
-            cout << layerErrors[i] << "  ";
-        }
-        cout << endl;
-    }
-
-}
-
-
-void NeuralNet::backpropagation() {
-
-}
+void NeuralNet::fetchInput() { ++this->sampleInputIdx; }
 
