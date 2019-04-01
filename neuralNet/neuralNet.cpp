@@ -1,11 +1,14 @@
 #include <iostream>
 #include "neuralNet.hpp"
 #include <cmath>
+#include <time.h>
 
 using namespace std;
 
 NeuralNet::NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network,
     double learningRate, unsigned epochs, unsigned miniBatchSize) {
+
+    srand (time(NULL));   
 
     if(network.size() < 3) {
         throw "In valid shape.";
@@ -126,7 +129,18 @@ void NeuralNet::forward() {
     if(this->layerPos < this->nLayers - 1 || this->network.back() < 2)
         y = this->dotProduct(X, W, nrows, ncols, "sig"); // Y = W * X  + b
     else {
-        y = this->dotProduct(X, W, nrows, ncols, "soft"); // Y = W * X  + b
+        y = this->dotProduct(X, W, nrows, ncols); // Y = W * X  + b
+        double sum = 0.0;
+        for(auto i = 0; i < this->network.back(); i++) {
+            double a = y[i];
+            sum += exp(a);
+        }
+
+        for(auto i = 0; i < this->network.back(); i++) {
+            double a = exp(y[i]);
+            a = a / sum;
+            y[i] = a;
+        }
     }
     memcpy(Y, y, sizeof(double) * nrows);  // update curr layer outputs
     ++this->layerPos;
@@ -198,9 +212,7 @@ double* NeuralNet::dotProduct(double* X, double* W, const unsigned nrows, const 
         if(tranfer == "sig") {
             prod = sigmoid(prod);
         }
-        else if(tranfer == "soft") {
-            cout << "Hello" << endl;
-        }
+
         y.push_back(prod);
     }
 
@@ -252,9 +264,18 @@ void NeuralNet::initNeurons(double* neurons, unsigned& dim) {
     }
 }
 
+double fRand(double fMin, double fMax){
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
+
 void NeuralNet::initWeight(double* w, unsigned& dim) {
     for(auto i = 0; i < dim; i++) {
-        w[i] = 0.5; // need to randomize
+        double wi = fRand(-1.0/sqrt(dim), 1.0/sqrt(dim));
+        while(wi == 0) {
+            wi = fRand(-1.0/sqrt(dim), 1.0/sqrt(dim));
+        }
+        w[i] = wi;
     }
 }
 
