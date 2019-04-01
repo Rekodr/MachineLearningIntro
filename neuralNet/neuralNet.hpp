@@ -42,10 +42,9 @@ public:
     void backPropageError(unsigned layerIndex, double* target=nullptr);
     void learn();
     
-    Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol, bool transfer=false);
+    Layer dotProduct(Layer X, Layer W, const unsigned nrow, const unsigned ncol, string transfer="");
     void fetchInput();
     
-
     double sigmoid(double& val);
     double totalError(double* target);
     void clearErrors();

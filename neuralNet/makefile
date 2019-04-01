@@ -1,7 +1,7 @@
 TARGET=NN
 CC=g++
-DEPS = neuralNet.hpp
-OBJ = main.o neuralNet.o
+DEPS = neuralNet.hpp dataReader.hpp
+OBJ = main.o neuralNet.o dataReader.o
 CFLAGS = -g3
 
 %.o: %.cpp $(DEPS)
