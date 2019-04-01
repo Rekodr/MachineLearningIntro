@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
         memcpy(w[i], tmp[i], sizeof(double) * curr * prev);
     }
 
-    NeuralNet net = NeuralNet(data, targets, shape, 0.5, 10);
+    NeuralNet net = NeuralNet(data, targets, shape, 0.5, 30);
     net.setBiases(b, 2);
     net.setWeights((double**)w);
 
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     net.train();
-    net.showW();
+    // net.showW();
 
     return 1;
 }

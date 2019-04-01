@@ -70,31 +70,35 @@ void NeuralNet::init() {
 }
 
 void NeuralNet::train() {
-    unsigned batch = 0;
+    unsigned nBatch = this->data.size() / this->miniBatchSize;
     double err = 0.0;
+
     for(auto i = 0; i < this->epochs; i++) {
-        for(auto j = 0; j < this->miniBatchSize; j++) {
-            this->fetchInput();
-            unsigned n = this->data.size();
-            if(this->sampleInputIdx >= this->miniBatchSize) {
-                this->sampleInputIdx = 0;
+        this->sampleInputIdx = 0;
+        while(this->sampleInputIdx < this->data.size()) {
+            for(auto j = 0; j < this->miniBatchSize && this->sampleInputIdx < this->data.size()
+            ; j++) {
+            
+                err = this->feedForward();
+                this->backPropagation();
+                this->fetchInput();
             }
-            err = this->feedForward();
-            this->backPropagation();
+            cout << "error: " << err/this->miniBatchSize << endl; 
+
+            /* if the number of sample per min batch is > 1,
+             compute the avg of deltas
+            */
+            if(this->miniBatchSize > 1) {
+                for(auto i = 0; i < this->nLayers; i++) {
+                    unsigned layerDim = this->network.at(i);
+                    if(i < this->nLayers - 1) ++layerDim; 
+                    this->avgErrors(this->layersError[i], layerDim, this->miniBatchSize);
+                }        
+            }
+
+            this->learn();
+            this->clearErrors();
         }
-
-        cout << "error: " << err/this->miniBatchSize << endl; 
-
-        if(this->miniBatchSize > 1) {
-            for(auto i = 0; i < this->nLayers; i++) {
-                unsigned layerDim = this->network.at(i);
-                if(i < this->nLayers - 1) ++layerDim; 
-                this->avgErrors(this->layersError[i], layerDim, this->miniBatchSize);
-            }        
-        }
-
-        this->learn();
-        this->clearErrors();
     }
 }
 
