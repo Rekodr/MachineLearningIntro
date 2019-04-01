@@ -14,7 +14,10 @@ private:
     unsigned nLayers;
     unsigned layerPos;
     unsigned sampleInputIdx;
+    unsigned epochs;
+    unsigned miniBatchSize;
     double learningRate;
+
     Layers layersInput;
     Layers layersWeights;
     Layers layersError;
@@ -23,7 +26,8 @@ private:
     vector<vector<double>> targets;
 
 public:
-    NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network, double learningRate=0.5);
+    NeuralNet(vector<vector<double>>& input, vector<vector<double>>& targets,  vector<unsigned>& network,
+        double learningRate=0.5, unsigned epochs=1, unsigned miniBatchSize=1);
     ~NeuralNet();
     void init();
     void initWeight(double* w, unsigned& dim);
@@ -44,6 +48,8 @@ public:
 
     double sigmoid(double& val);
     double totalError(double* target);
+    void clearErrors();
+    void avgErrors(Layer deltas, unsigned& dim, unsigned N);
     
     void setBiases(double b[], const unsigned n);
     void setWeights(double* w[]);
