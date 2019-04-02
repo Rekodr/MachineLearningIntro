@@ -30,12 +30,14 @@ public:
         double learningRate=0.5, unsigned epochs=1, unsigned miniBatchSize=1);
     ~NeuralNet();
     void init();
-    void initWeight(double* w, unsigned& dim);
-    void initNeurons(double* neurons, unsigned& dim);
+    void initWeight(Layer w, unsigned& dim, unsigned& nNodes);
+    void initNeurons(Layer neurons, unsigned& dim);
     void initBiases();
     unsigned getnLayers() { return this->nLayers;};
     
     void train();
+    void test(vector<vector<double>>& input, vector<vector<double>>& targets);
+    unsigned classify(vector<double>& input);
     double feedForward();
     void forward();
     void backPropagation();
@@ -46,12 +48,12 @@ public:
     void fetchInput();
     
     double sigmoid(double& val);
-    double totalError(double* target);
+    double totalError(Layer target);
     void clearErrors();
     void avgErrors(Layer deltas, unsigned& dim, unsigned N);
     
     void setBiases(double b[], const unsigned n);
-    void setWeights(double* w[]);
+    void setWeights(Layer w[]);
     void showW();
     void showN();
 };

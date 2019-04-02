@@ -17,7 +17,7 @@ for f_name, f_out in zip(files, files_out):
 
     X = np.array(X_)
     Y = np.array(Y_)
-#     X = X/16
+    X = X/16
     row, col = X.shape
     arr = np.insert(X, col, Y, axis=1)
     print(arr.shape)
