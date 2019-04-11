@@ -25,3 +25,5 @@ for f_name, f_out in zip(files, files_out):
     df.to_csv(f_out, index=False, header=False)
 
     f.close()
+
+    
